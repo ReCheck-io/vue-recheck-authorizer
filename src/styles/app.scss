@@ -1,0 +1,85 @@
+@import './reset.scss', './card.scss', './modal.scss';
+
+
+.alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  width: 330px;
+  padding: 16px;
+  color: #ffffff;
+  border-radius: 3px;
+
+  p {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  button {
+    border: 0;
+    outline: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: transparent;
+  }
+}
+
+.loader {
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 999999;
+  background-color: rgba(0, 0, 0, 0.65);
+}
+
+.loader::after {
+  content: '';
+  position: fixed;
+  width: 64px;
+  height: 64px;
+  border: 7px solid #89ca02;
+  border-left-color: transparent;
+  border-radius: 50%;
+  top: calc(50% - 24px);
+  left: calc(50% - 24px);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.camera {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.identity {
+  text-align: center;
+}
+
+.publicAddress {
+  cursor: pointer;
+  font-weight: 500;
+  word-break: break-word;
+
+  svg {
+    margin-right: 8px;
+    vertical-align: top;
+  }
+}
