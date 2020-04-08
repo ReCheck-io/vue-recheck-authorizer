@@ -3,7 +3,7 @@ module.exports = {
   description:
     'A set of Vue.js components for authentication and data interaction with Recheck Platform.',
 
-  base: '/vue-recheck-authorizer',
+  base: '/vue-recheck-authorizer/',
 
   themeConfig: {
     repo: 'recheck-io/vue-recheck-authorizer',
