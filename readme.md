@@ -1,3 +1,5 @@
+[![Website recheck.io](https://img.shields.io/badge/Website-recheck.io-brightgreen.svg)](https://recheck.io/) <a href="https://discord.gg/3KwFw72"><img src="https://img.shields.io/discord/675683560673509386?logo=discord" alt="chat on Discord"></a>
+
 # vue-recheck-authorizer
 
 [![npm](https://img.shields.io/npm/v/vue-recheck-authorizer.svg) ![npm](https://img.shields.io/npm/dm/vue-recheck-authorizer.svg)](https://www.npmjs.com/package/vue-recheck-authorizer)
