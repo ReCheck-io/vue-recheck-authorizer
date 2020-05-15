@@ -82,6 +82,8 @@ export default {
     if (!this.$router) {
       alert("Hey you don't have Vue Router!");
     }
+
+    chainClient
   },
 
   methods: {
@@ -123,15 +125,7 @@ export default {
             'You are about to login. Are you sure?',
           );
         }
-      } else if (
-        decodedString.startsWith('s:') ||
-        decodedString.startsWith('sh:')
-      ) {
-        if (decodedString.startsWith('s:')) {
-          decodedString = decodedString.replace('s:', 'sh:');
-        }
-
-        this.decodedString = decodedString;
+      } else if (decodedString.startsWith('sh:')) {
         this.pinCase = 'share';
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);
@@ -153,16 +147,7 @@ export default {
             'You are about to sign a file. Are you sure?',
           );
         }
-      } else if (
-        decodedString.startsWith('bo:') ||
-        decodedString.startsWith('mo:') ||
-        decodedString.startsWith('o:')
-      ) {
-        if (decodedString.startsWith('o:')) {
-          decodedString = 'b' + decodedString;
-        }
-
-        this.decodedString = decodedString;
+      } else if (decodedString.startsWith('re:')) {
         this.pinCase = 'decrypt';
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);
