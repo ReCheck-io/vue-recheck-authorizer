@@ -29,20 +29,26 @@
 </template>
 
 <script>
-import chainClient from '../chain';
+import chainClient from '../chain/index';
+import { QrcodeStream } from 'vue-qrcode-reader'
+import Card from '../components/cards/Card.vue'
+import Alert from '../components/alert/Alert.vue'
+import Loader from '../components/loader/Loader.vue'
+import InfoCard from '../components/cards/InfoCard.vue'
+import InputModal from '../components/modals/InputModal.vue'
+import ConfirmModal from '../components/modals/ConfirmModal.vue'
 
 export default {
   name: 'RecheckScanner',
 
   components: {
-    QrcodeStream: () =>
-      import('vue-qrcode-reader').then(({ QrcodeStream }) => QrcodeStream),
-    Card: () => import('./cards/Card'),
-    Alert: () => import('./alert/Alert'),
-    Loader: () => import('./loader/Loader'),
-    InfoCard: () => import('./cards/InfoCard'),
-    InputModal: () => import('./modals/InputModal'),
-    ConfirmModal: () => import('./modals/ConfirmModal'),
+    QrcodeStream,
+    Card,
+    Alert,
+    Loader,
+    InfoCard,
+    InputModal,
+    ConfirmModal,
   },
 
   props: {

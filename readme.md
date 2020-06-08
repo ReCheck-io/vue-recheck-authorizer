@@ -22,48 +22,30 @@ yarn add vue-recheck-authorizer vue-qrcode-reader
 Install all the components:
 
 ```javascript
-import Vue from 'vue'
-import VueRecheckAuthorizer from 'vue-recheck-authorizer'
+import Vue from 'vue';
+import VueQrcodeReader from 'vue-qrcode-reader';
+import VueRecheckAuthorizer from 'vue-recheck-authorizer';
+import '../node_modules/vue-recheck-authorizer/dist/main.css';
 
-Vue.use(VueRecheckAuthorizer)
+Vue.use(VueQrcodeReader);
+Vue.use(VueRecheckAuthorizer);
 ```
 
 Use specific components:
 
 ```javascript
-import Vue from 'vue'
-import { Scanner } from 'vue-recheck-authorizer'
+import Vue from 'vue';
+import VueQrcodeReader from 'vue-qrcode-reader';
+import { Scanner } from 'vue-recheck-authorizer';
+import '../node_modules/vue-recheck-authorizer/dist/main.css';
 
-Vue.component('recheck-scanner', Scanner)
+Vue.use(VueQrcodeReader);
+Vue.component('recheck-scanner', Scanner);
 ```
-
-**⚠️ A css file is included when importing the package. You may have to setup your bundler to embed the css in your page.**
-
-## Distribution import
-
-Install all the components:
-
-```javascript
-import 'vue-recheck-authorizer/dist/vue-recheck-authorizer.css'
-import VueRecheckAuthorizer from 'vue-recheck-authorizer/dist/vue-recheck-authorizer.common'
-
-Vue.use(VueRecheckAuthorizer)
-```
-
-Use specific components:
-
-```javascript
-import 'vue-recheck-authorizer/dist/vue-recheck-authorizer.css'
-import { Scanner } from 'vue-recheck-authorizer/dist/vue-recheck-authorizer.common'
-
-Vue.component('recheck-scanner', Scanner)
-```
-
-**⚠️ You may have to setup your bundler to embed the css file in your page.**
 
 ---
 
-### See [Documentation](https://recheck-io.github.io/vue-recheck-authorizer) for more information.
+#### See [Documentation](https://recheck-io.github.io/vue-recheck-authorizer) for more information.
 
 ---
 

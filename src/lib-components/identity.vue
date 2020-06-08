@@ -108,8 +108,13 @@
 </template>
 
 <script>
-import chainClient from '../chain';
-import identityMixins from '../mixins';
+import chainClient from '../chain/index';
+import identityMixins from '../mixins/index.vue';
+import Card from '../components/cards/Card.vue'
+import Alert from '../components/alert/Alert.vue'
+import Loader from '../components/loader/Loader.vue'
+import InputModal from '../components/modals/InputModal.vue'
+import ConfirmModal from '../components/modals/ConfirmModal.vue'
 
 export default {
   name: 'RecheckIdentity',
@@ -117,11 +122,11 @@ export default {
   mixins: [identityMixins],
 
   components: {
-    Card: () => import('./cards/Card'),
-    Alert: () => import('./alert/Alert'),
-    Loader: () => import('./loader/Loader'),
-    InputModal: () => import('./modals/InputModal'),
-    ConfirmModal: () => import('./modals/ConfirmModal'),
+    Card,
+    Alert,
+    Loader,
+    InputModal,
+    ConfirmModal,
   },
 
   props: {
