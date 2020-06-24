@@ -12,6 +12,7 @@ export default Vue.extend({
 
 <template>
   <div id="app">
-    <recheck-scanner />
+    <recheck-scanner :handledByComponent="true" />
+    <recheck-identity />
   </div>
 </template>

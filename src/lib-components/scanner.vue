@@ -37,6 +37,7 @@ import Loader from '../components/loader/Loader.vue'
 import InfoCard from '../components/cards/InfoCard.vue'
 import InputModal from '../components/modals/InputModal.vue'
 import ConfirmModal from '../components/modals/ConfirmModal.vue'
+import { logger } from '../utils/logger';
 
 export default {
   name: 'RecheckScanner',
@@ -70,6 +71,7 @@ export default {
       initialized: false,
       decodedString: '',
       componentHandled: this.handledByComponent,
+      apiEnv: process.env.VUE_APP_API_ENV.split(","),
 
       showPinModal: false,
       pinCase: 'login',
@@ -84,12 +86,12 @@ export default {
   },
 
   mounted() {
+    chainClient.setURLandNetwork(this.apiEnv[0], this.apiEnv[1]);
     this.pinned = chainClient.pinned();
+
     if (!this.$router) {
       alert("Hey you don't have Vue Router!");
     }
-
-    chainClient
   },
 
   methods: {

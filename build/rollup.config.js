@@ -34,6 +34,8 @@ const baseConfig = {
     replace: {
       'process.env.NODE_ENV': JSON.stringify('production'),
       'process.env.ES_BUILD': JSON.stringify('false'),
+      'process.env.API_ENV': JSON.stringify(process.env.API_ENV),
+      'process.env.LOGGER_MODE': JSON.stringify(process.env.LOGGER_MODE),
     },
     vue: {
       css: false,

@@ -6,13 +6,17 @@ import { logger } from '../utils/logger';
 var wallet = null;
 var keyPair = null;
 
-let baseHost = window.location.hostname;
-let basePort = window.location.port;
-let apiUrl = window.location.protocol + '//' + baseHost + ':' + basePort;
-// apiUrl = 'http://localhost:3000'
-apiUrl = 'https://beta.recheck.io';
+let environment = process.env.VUE_APP_API_ENV.split(",")
+let apiUrl = environment[0]
+
+logger("chain", process.env)
 
 export default {
+  setURLandNetwork: function (apiURL, network) {
+    apiUrl = apiURL;
+    e2e.init(apiURL, network);
+  },
+
   init: async function (password) {
     logger('init');
     e2e.init(apiUrl);

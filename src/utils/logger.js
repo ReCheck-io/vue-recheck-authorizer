@@ -1,5 +1,5 @@
 const loggerConfig = {
-  mode: 'production',
+  mode: process.env.VUE_APP_LOGGER_MODE || 'production',
 };
 
 export function logger() {
