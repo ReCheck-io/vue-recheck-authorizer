@@ -17,6 +17,20 @@ npm install --save vue-recheck-authorizer vue-qrcode-reader
 yarn add vue-recheck-authorizer vue-qrcode-reader
 ```
 
+## Config
+*Each (production/development) scripts loads env file for itself* <br />
+`.env.production.local` for production settings/scripts <br />
+`.env.development.local` for development settings/scripts
+
+Example `.env.production.local` file:
+```bash
+# production (logs disabled) or debug (logs enabled)
+VUE_APP_LOGGER_MODE=production
+
+# api endpoint,network needed to initialize function
+VUE_APP_API_ENV=https://beta.recheck.io,ae
+```
+
 ## Default import
 
 Install all the components:
