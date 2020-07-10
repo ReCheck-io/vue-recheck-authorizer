@@ -17,5 +17,5 @@ jobs:
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         TARGET_REPO: recheck-io/vue-recheck-authorizer
-        BUILD_SCRIPT: npm run build:docs
+        BUILD_SCRIPT: npm install && npm run build:docs
         BUILD_DIR: docs/.vuepress/dist/
