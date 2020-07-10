@@ -1,33 +1,21 @@
-# This is a basic workflow to deploy Authorizer Docs on push
-
 name: Deploy Docs
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     branches: [ master ]
-    paths: 
-      - "docs/**"
 
 jobs:
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@master
 
-    - name: Build docs
-      run: npm run build:docs
-
-    - name: Go to docs output folder and push changes to gh-pages branch
-      run: |
-        cd docs/.vuepress/dist
-        
-        git init
-        git add -A
-        git commit -m 'deploy'
-        git push --force https://github.com/recheck-io/vue-recheck-authorizer.git master:gh-pages
-
-        cd -
+    - name: Build/Deploy docs
+      uses: jenkey2011/vuepress-deploy@master
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        TARGET_REPO: recheck-io/vue-recheck-authorizer
+        BUILD_SCRIPT: npm run build:docs
+        BUILD_DIR: docs/.vuepress/dist/
