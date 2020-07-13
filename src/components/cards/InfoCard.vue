@@ -17,7 +17,9 @@
       </p>
     </div>
     <footer v-if="!isPinned" class="card-footer">
-      <a class="btn link" href="/#/identity">Identity Settings</a>
+      <button type="button" class="btn link" @click="goToIdentity">
+        Identity Settings
+      </button>
     </footer>
   </div>
 </template>
@@ -34,5 +36,11 @@ export default {
       type: String,
     },
   },
+
+  methods: {
+    goToIdentity() {
+      window.location.assign('/#/identity');
+    }
+  }
 };
 </script>

@@ -18,6 +18,12 @@ export const router = new Router({
       component: Component
     },
     {
+      path: "/identity",
+      name: "Identity",
+      default: false,
+      component: Component
+    },
+    {
       path: "*",
       redirect: "/"
     }
