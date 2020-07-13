@@ -39,7 +39,7 @@ export default {
 
   methods: {
     goToIdentity() {
-      window.location.assign('/#/identity');
+      this.$router.push('/identity');
     }
   }
 };
