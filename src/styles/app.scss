@@ -1,31 +1,36 @@
 @import './reset.scss', './card.scss', './modal.scss';
 
-
 .alert {
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 1rem;
+  left: calc(50% - 140px);
+  margin: 0 auto;
   z-index: 9999;
-  width: 330px;
-  padding: 16px;
+  width: 280px;
+  padding: 12px 16px;
   color: #ffffff;
   border-radius: 3px;
+  transition: 200ms;
+  transform: translateY(16px);
+  transform-origin: bottom left;
+  // hide element
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 
-  p {
-    font-size: 15px;
-    font-weight: 500;
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+    transform: translateY(0);
   }
 
-  button {
-    border: 0;
-    outline: 0;
-    font-size: 15px;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: transparent;
+  p {
+    font-size: 14px;
+    font-weight: 400;
   }
 }
 
@@ -82,4 +87,8 @@
     margin-right: 8px;
     vertical-align: top;
   }
+}
+
+button, .btn {
+  cursor: pointer;
 }

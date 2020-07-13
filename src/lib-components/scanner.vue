@@ -144,6 +144,17 @@ export default {
             'You are about to share a document. Are you sure?',
           );
         }
+      } else if (decodedString.startsWith('se:')) {
+        this.pinCase = 'share';
+        if (!this.componentHandled) {
+          this.$emit('qr-decode', this.pinCase);
+        } else {
+          this.handleDecode(
+            this.pinCase,
+            'Document Share Request',
+            'You are about to share a document by email. Are you sure?',
+          );
+        }
       } else if (decodedString.startsWith('sg:')) {
         this.pinCase = 'sign';
         if (!this.componentHandled) {

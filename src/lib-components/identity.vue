@@ -41,6 +41,18 @@
           </button>
         </template>
       </card>
+
+      <card>
+        <template #header>Reset Identity</template>
+        <p>
+          Reset Identity will remove your current identity. If you have not saved the phrase for your current identity it will be lost FOREVER.
+        </p>
+        <template #footer>
+          <button type="button" class="btn danger" @click="resetIdentity">
+            Reset Identity
+          </button>
+        </template>
+      </card>
     </div>
 
     <!-- New identity -->
@@ -48,12 +60,15 @@
       <card>
         <template #header>New Identity</template>
         <p>
-          To start using the app, please create your new digital identity. You
-          will be asked to create and remember your personal security PIN.
+          To start using the app, please create or restore your digital identity.
+          You will be asked to create and remember your personal security PIN.
         </p>
         <template #footer>
           <button type="button" class="btn" @click="createIdentity">
             Create Identity
+          </button>
+          <button type="button" class="btn" @click="restoreIdentityAtStart">
+            Restore Identity
           </button>
         </template>
       </card>
@@ -104,6 +119,13 @@
         </button>
       </template>
     </confirm-modal>
+    <confirm-modal
+      :isVisible.sync="showConfirmModal"
+      :title="title"
+      :message="message"
+      :resolve="resolve"
+      :reject="reject"
+    />
   </div>
 </template>
 
@@ -115,6 +137,7 @@ import Alert from '../components/alert/Alert.vue'
 import Loader from '../components/loader/Loader.vue'
 import InputModal from '../components/modals/InputModal.vue'
 import ConfirmModal from '../components/modals/ConfirmModal.vue'
+import { logger } from '../utils/logger';
 
 export default {
   name: 'RecheckIdentity',
@@ -153,6 +176,12 @@ export default {
       importDialog: false,
       showPinDialog: false,
       privateKeyDialog: false,
+
+      showConfirmModal: false,
+      title: '',
+      message: '',
+      resolve: null,
+      reject: null,
     };
   },
 
@@ -170,6 +199,39 @@ export default {
   },
 
   methods: {
+    seedCheck(seedPhrase) {
+      if (seedPhrase.split(" ").length == 12) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    resetIdentity() {
+      this.open(
+        "Reset Identity",
+        "Are you really sure you want to reset your Identity?"
+      )
+        .then((resolved) => {
+          if (resolved) {
+            this.open(
+              "Reset Identity",
+              "Are you really sure you want to reset your identity ? You will lose the current one forever!"
+            )
+              .then((resolved) => {
+                if (resolved) {
+                  localStorage.clear();
+                  location.reload();
+                } else {
+                  this.showConfirmModal = false;
+                }
+              })
+          } else {
+            this.showConfirmModal = false;
+          }
+        })
+    },
+
     createIdentity() {
       this.pin = '';
       this.pinDialog = 3;
@@ -206,16 +268,52 @@ export default {
       }
     },
 
+    restoreIdentityAtStart() {
+      this.check = false;
+      this.pin = "";
+      this.pinMessage = "Please choose a new PIN";
+      this.inputMessage = 'Private Key Mnemonic*';
+      this.pinDialog = 10;
+      this.showPinDialog = true;
+    },
+
     async doRestoreIdentity() {
-      if (chainClient.loadWallet(this.pin) !== 'authError') {
-        this.$root.$emit('loaderOn');
-        await chainClient.importPrivateKey(this.pin, this.privateKey);
-        this.$root.$emit('loaderOff');
-        this.$root.$emit('walletEvent');
-        this.$root.$emit('alertOn', 'Identity restored successfully!', 'green');
-        this.importDialog = false;
+      if (this.seedCheck(this.privateKey)) {
+        if (!chainClient.pinned()) {
+          logger("new privateKey", this.privateKey);
+          this.$root.$emit("loaderOn");
+          await chainClient.restoreIdentityAtStart(this.pin, this.privateKey);
+          this.$root.$emit("loaderOff");
+          this.$root.$emit("walletEvent");
+          this.$root.$emit(
+            "alertOn",
+            "Identity restored successfully!",
+            "green"
+          );
+          this.importDialog = false;
+          location.reload();
+        } else if (chainClient.loadWallet(this.pin) !== "authError") {
+          logger("new privateKey", this.privateKey);
+          this.$root.$emit("loaderOn");
+          await chainClient.importPrivateKey(this.pin, this.privateKey);
+          this.$root.$emit("loaderOff");
+          this.$root.$emit("walletEvent");
+          this.$root.$emit(
+            "alertOn",
+            "Identity restored successfully!",
+            "green"
+          );
+          this.importDialog = false;
+          location.reload();
+        } else {
+          this.$root.$emit("alertOn", "PIN mismatch.", "red");
+        }
       } else {
-        this.$root.$emit('alertOn', 'PIN mismatch.', 'red');
+        this.$root.$emit(
+          "alertOn",
+          "The secret phrase have to be 12 words.",
+          "red"
+        );
       }
     },
 
@@ -253,26 +351,56 @@ export default {
           this.pinDialog = 4;
           this.showPinDialog = true;
         }
+      } else if (this.pinDialog === 10) {
+        if (this.pin.length < 4) {
+          this.$root.$emit(
+            "alertOn",
+            "PIN must be at least 4 characters long!",
+            "red"
+          );
+        } else {
+          this.check = true;
+          this.pinMessage = "Please repeat your new PIN";
+          this.pin1 = this.pin;
+          this.pin = "";
+          this.pinDialog = 11;
+          this.showPinDialog = true;
+        }
+      } else if (this.pinDialog === 11) {
+        if (this.pin.length < 4) {
+          this.$root.$emit(
+            "alertOn",
+            "PIN must be at least 4 characters long!",
+            "red"
+          );
+        } else {
+          this.pin2 = this.pin;
+          if (this.pin1 === this.pin2) {
+            this.showPinDialog = false;
+            this.importDialog = true;
+          }
+        }
       } else if (this.pinDialog === 4) {
         this.pin2 = this.pin;
         if (this.pin1 === this.pin2) {
           this.check = true;
           this.showPinDialog = false;
-          this.$root.$emit('loaderOn');
+          this.$root.$emit("loaderOn");
           await chainClient.init(this.pin);
           this.pinned = chainClient.pinned();
-          this.$root.$emit('walletEvent');
-          this.$root.$emit('loaderOff');
+          this.pinAutomation(this.returnAutomation, this.pin);
+          this.$root.$emit("walletEvent");
+          this.$root.$emit("loaderOff");
           this.$root.$emit(
-            'alertOn',
-            'Identity created successfully!',
-            'green',
+            "alertOn",
+            "Identity created successfully!",
+            "green"
           );
         } else {
           this.pinDialog = 0;
           this.showPinDialog = false;
-          this.pin = '';
-          this.$root.$emit('alertOn', 'PIN mismatch.', 'red');
+          this.pin = "";
+          this.$root.$emit("alertOn", "PIN mismatch.", "red");
         }
       }
     },
@@ -282,6 +410,16 @@ export default {
       this.pin1 = '';
       this.pin2 = '';
       this.showPinDialog = false;
+    },
+
+    open(title, message) {
+      this.showConfirmModal = true;
+      this.title = title;
+      this.message = message;
+      return new Promise((resolve, reject) => {
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     async pinAutomation(check, PIN) {

@@ -115,15 +115,19 @@ export default {
     return true;
   },
 
+  restoreIdentityAtStart: async function(password, phrase){
+    this.resetWallet()
+    keyPair = await e2e.newKeyPair(phrase)
+    wallet = JSON.stringify(keyPair)
+    this.saveWallet(keyPair, password)
+    return true
+  },
+
   importPrivateKey: async function (password, phrase) {
     if (!this.checkPassword(password)) {
-      return 'authError';
+      return 'authError'
     }
-    this.resetWallet();
-    keyPair = await e2e.newKeyPair(phrase);
-    wallet = JSON.stringify(keyPair);
-    this.saveWallet(keyPair, password);
-    return true;
+    this.restoreIdentityAtStart(password,phrase)
   },
 
   doLogin: async function (password, _challenge, callback) {

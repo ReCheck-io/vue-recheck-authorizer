@@ -1,11 +1,7 @@
 <template>
-  <transition
-    enter-active-class="animated quick fadeInRight"
-    leave-active-class="animated quick fadeOutRight"
-  >
-    <div class="alert" v-show="visible" :style="{ backgroundColor: color }">
+  <transition>
+    <div class="alert" :class="[visible ? 'is-visible' : '']" :style="{ backgroundColor: color }">
       <p>{{ message }}</p>
-      <button type="button" @click="hideAlert">OK</button>
     </div>
   </transition>
 </template>
@@ -19,7 +15,7 @@ export default {
       visible: false,
       message: '',
       color: '',
-      timeout: 4000,
+      timeout: 3000,
     };
   },
 

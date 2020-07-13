@@ -1,18 +1,36 @@
 <script>
 import Vue from 'vue';
-import { RecheckScanner } from '@/entry';
+import { RecheckScanner, RecheckIdentity } from '@/entry';
 
 export default Vue.extend({
   name: 'ServeDev',
   components: {
     RecheckScanner,
+    RecheckIdentity
   }
 });
 </script>
 
 <template>
   <div id="app">
-    <recheck-scanner :handledByComponent="true" />
-    <recheck-identity />
+    <h3 class="title">Scanner</h3>
+    <RecheckScanner :handledByComponent="true" />
+    <hr />
+    <h3 class="title">Identity</h3>
+    <RecheckIdentity />
   </div>
 </template>
+
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+h3.title {
+  text-align: center;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+</style>
