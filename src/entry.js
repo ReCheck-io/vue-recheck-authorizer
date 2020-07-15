@@ -1,6 +1,9 @@
 // Import vue components
 import * as components from '@/lib-components/index';
 
+// Import chain functions
+import chainClient from '@/chain/index'
+
 // install function executed by Vue.use()
 const install = function installVueRecheckAuthorizer(Vue) {
   if (install.installed) return;
@@ -35,3 +38,5 @@ export default plugin;
 // To allow individual component use, export components
 // each can be registered via Vue.component()
 export * from '@/lib-components/index';
+export { chainClient };
+
