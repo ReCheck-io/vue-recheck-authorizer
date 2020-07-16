@@ -6,12 +6,15 @@ import { logger } from '../utils/logger';
 var wallet = null;
 var keyPair = null;
 
-let environment = process.env.VUE_APP_API_ENV.split(",")
+let environment = process.env.VUE_APP_API_ENV 
+  ? process.env.VUE_APP_API_ENV.split(",") 
+  : "";
+
 let apiUrl = environment[0]
 
 logger("chain", process.env)
 
-export default {
+const chain = {
   setURLandNetwork: function (apiURL, network) {
     apiUrl = apiURL;
     e2e.init(apiURL, network);
@@ -189,3 +192,6 @@ export default {
     return keyPair;
   },
 };
+
+export default chain
+export { chain }
