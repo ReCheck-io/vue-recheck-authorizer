@@ -2,7 +2,7 @@
   <div class="scanner" :class="classes">
     <alert />
     <loader />
-    <div class="camera" v-if="pinned && !error.length > 0">
+    <div class="camera" v-if="useIntegratedCamera && pinned && !error.length > 0">
       <qrcode-stream @init="onInit" @decode="onDecode"></qrcode-stream>
     </div>
 
@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import chainClient from '../chain/index';
 import { QrcodeStream } from 'vue-qrcode-reader'
 import Card from '../components/cards/Card.vue'
 import Alert from '../components/alert/Alert.vue'
@@ -37,6 +36,7 @@ import Loader from '../components/loader/Loader.vue'
 import InfoCard from '../components/cards/InfoCard.vue'
 import InputModal from '../components/modals/InputModal.vue'
 import ConfirmModal from '../components/modals/ConfirmModal.vue'
+import chainClient from '../chain/index';
 import { logger } from '../utils/logger';
 
 export default {
@@ -58,6 +58,10 @@ export default {
       default: true,
       required: true,
     },
+    useIntegratedCamera: {
+      type: Boolean,
+      default: true
+    },
     classes: {
       type: String,
       default: '',
@@ -71,7 +75,9 @@ export default {
       initialized: false,
       decodedString: '',
       componentHandled: this.handledByComponent,
-      apiEnv: process.env.VUE_APP_API_ENV.split(","),
+      apiEnv: process.env.VUE_APP_API_ENV 
+        ? process.env.VUE_APP_API_ENV.split(",") 
+        : "",
 
       showPinModal: false,
       pinCase: 'login',
@@ -92,6 +98,8 @@ export default {
     if (!this.$router) {
       alert("Hey you don't have Vue Router!");
     }
+
+    this.setupCamera();
   },
 
   methods: {
@@ -254,10 +262,12 @@ export default {
       } else if (this.pinCase === 'sign') {
         this.doExecSelection();
       }
+      this.setupCamera();
       this.showPinModal = false;
     },
 
     cancelPin() {
+      this.setupCamera();
       this.pinCode = '';
       this.showPinModal = false;
     },
@@ -271,12 +281,14 @@ export default {
             } else {
               if (pinCase === 'login') {
                 this.doLogin();
+                this.setupCamera();
               } else if (
                 pinCase === 'share' ||
                 pinCase === 'decrypt' ||
                 pinCase === 'sign'
               ) {
                 this.doExecSelection();
+                this.setupCamera();
               }
             }
           } else {
@@ -288,6 +300,20 @@ export default {
           this.$router.push('/');
         });
     },
+
+    setupCamera() {
+      if (!this.useIntegratedCamera && window && window.QRScanner) {
+        window.QRScanner.show();
+        window.QRScanner.scan((err, contents) => {
+          if (err) {
+            logger("scan error: ", err);
+          } else {
+            logger("scan result: ", contents)
+            this.onDecode(contents);
+          }
+        });
+      }
+    }
   },
 };
 </script>

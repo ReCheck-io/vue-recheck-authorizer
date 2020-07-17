@@ -14,7 +14,7 @@ export default Vue.extend({
 <template>
   <div id="app">
     <h3 class="title">Scanner</h3>
-    <RecheckScanner :handledByComponent="true" />
+    <RecheckScanner :handledByComponent="true" :useIntegratedCamera="false" />
     <hr />
     <h3 class="title">Identity</h3>
     <RecheckIdentity />
