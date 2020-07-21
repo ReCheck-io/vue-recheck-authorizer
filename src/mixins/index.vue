@@ -10,7 +10,7 @@ export default {
       try {
         const successful = document.execCommand('copy');
         if (successful) {
-          this.$root.$emit('alertOn', 'Mnemonic copied to clipboard.', 'green');
+          this.$root.$emit('alertOn', 'Recovery phrase copied to clipboard.', 'green');
         } else {
           this.$root.$emit('alertOn', 'Could not copy to clipboard!', 'red');
         }

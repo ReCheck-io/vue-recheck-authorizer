@@ -31,9 +31,9 @@ export const store = new Vuex.Store({
       state.automatedPIN = true;
       state.savedPIN = payload;
       alert(
-        "Your PIN is has been saved for the next " +
-          state.timeToRemember / 60000 +
-          " minutes"
+        "Your Passcode is has been saved for the next " +
+        state.timeToRemember / 60000 +
+        " minutes"
       );
     },
     rememberTime: (state, payload) => {

@@ -6,13 +6,11 @@ import { logger } from '../utils/logger';
 var wallet = null;
 var keyPair = null;
 
-let environment = process.env.VUE_APP_API_ENV 
-  ? process.env.VUE_APP_API_ENV.split(",") 
+let environment = process.env.VUE_APP_API_ENV
+  ? process.env.VUE_APP_API_ENV.split(",")
   : "";
 
 let apiUrl = environment[0]
-
-logger("chain", process.env)
 
 const chain = {
   setURLandNetwork: function (apiURL, network) {
@@ -118,7 +116,7 @@ const chain = {
     return true;
   },
 
-  restoreIdentityAtStart: async function(password, phrase){
+  restoreIdentityAtStart: async function (password, phrase) {
     this.resetWallet()
     keyPair = await e2e.newKeyPair(phrase)
     wallet = JSON.stringify(keyPair)
@@ -130,7 +128,7 @@ const chain = {
     if (!this.checkPassword(password)) {
       return 'authError'
     }
-    this.restoreIdentityAtStart(password,phrase)
+    this.restoreIdentityAtStart(password, phrase)
   },
 
   doLogin: async function (password, _challenge, callback) {

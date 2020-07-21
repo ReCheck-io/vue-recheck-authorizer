@@ -29,7 +29,7 @@
             "
           >
             <label class="checkboxLabel">
-              Remember your PIN
+              Remember your Passcode
               <input
                 type="checkbox"
                 :value="checkboxValue"
@@ -57,7 +57,7 @@ export default {
     },
     inputLabel: {
       type: String,
-      default: 'Please enter your PIN',
+      default: 'Please enter your Passcode',
     },
     inputType: {
       type: String,
@@ -78,7 +78,7 @@ export default {
     },
     inputPlaceholder: {
       type: String,
-      default: 'Your PIN',
+      default: 'Your Passcode',
     },
   },
 

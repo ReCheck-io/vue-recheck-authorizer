@@ -3,7 +3,7 @@
     <!-- Current user identity -->
     <div v-if="pinned" class="current-identity">
       <card>
-        <template #header>Blockchain User Identity</template>
+        <template #header>My ReCheck Identity</template>
         <h4 class="publicAddress" @click="copyStringToClipboard(publicAddress)">
           {{ publicAddress }}
           <svg
@@ -27,17 +27,16 @@
 
       <!-- User Identity settings (restore identity & backup identity) -->
       <card>
-        <template #header>Backup &amp; Restore</template>
+        <template #header>Backup &amp; Recover</template>
         <p>
-          It is <strong>STRONGLY</strong> advised that you make a backup copy of
-          your private key!
+          We <strong>STRONGLY RECOMMEND</strong> to write down your recovery phrase in order to be able to restore your identity.
         </p>
         <template #footer>
           <button type="button" class="btn" @click="backupIdentity">
             Backup
           </button>
           <button type="button" class="btn" @click="restoreIdentity">
-            Restore
+            Recover
           </button>
         </template>
       </card>
@@ -45,7 +44,7 @@
       <card>
         <template #header>Reset Identity</template>
         <p>
-          Reset Identity will remove your current identity. If you have not saved the phrase for your current identity it will be lost FOREVER.
+          Reset Identity will remove your current identity. If you have not saved the recovery phrase for your current identity it will be lost <strong>FOREVER</strong>.
         </p>
         <template #footer>
           <button type="button" class="btn danger" @click="resetIdentity">
@@ -58,17 +57,17 @@
     <!-- New identity -->
     <div v-if="!pinned" class="new-identity">
       <card>
-        <template #header>New Identity</template>
+        <template #header>New ReCheck Identity</template>
         <p>
           To start using the app, please create or restore your digital identity.
-          You will be asked to create and remember your personal security PIN.
+          You will be asked to create and remember your personal security Passcode.
         </p>
         <template #footer>
           <button type="button" class="btn" @click="createIdentity">
             Create Identity
           </button>
           <button type="button" class="btn" @click="restoreIdentityAtStart">
-            Restore Identity
+            Recover Identity
           </button>
         </template>
       </card>
@@ -83,10 +82,10 @@
       :rememberPin="true"
       :checkboxValue.sync="automation"
     >
-      <template #header>Your Pin</template>
+      <template #header>Your Passcode</template>
       <template #footer>
         <button type="button" class="btn" @click="cancelPin">Cancel</button>
-        <button type="button" class="btn" @click="confirmPin">Confirm</button>
+        <button type="button" class="btn primary" @click="confirmPin">Confirm</button>
       </template>
     </input-modal>
     <input-modal
@@ -94,19 +93,19 @@
       v-model="privateKey"
       inputType="text"
       :inputLabel="inputMessage"
-      inputPlaceholder="Please enter your key mnemonic."
+      inputPlaceholder="Please enter your recovery phrase."
     >
-      <template #header>Restore Identity</template>
+      <template #header>Recover Identity</template>
       <template #footer>
         <button type="button" class="btn" @click="importDialog = false">
           Cancel
         </button>
-        <button type="button" class="btn" @click="doRestoreIdentity">
-          Restore
+        <button type="button" class="btn primary" @click="doRestoreIdentity">
+          Recover
         </button>
       </template>
     </input-modal>
-    <confirm-modal :isVisible="privateKeyDialog" title="Your Key Mnemonic">
+    <confirm-modal :isVisible="privateKeyDialog" title="Your Recovery Phrase">
       <template #body>
         <p id="mnemonicKey">{{ privateKey }}</p>
       </template>
@@ -207,6 +206,22 @@ export default {
       }
     },
 
+    checkPin(pin) {
+      if (pin === "") {
+        return false;
+      } else {
+        if (pin === undefined) {
+          return false;
+        } else {
+          if (pin.length < 3) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      }
+    },
+
     resetIdentity() {
       this.open(
         "Reset Identity",
@@ -216,12 +231,13 @@ export default {
           if (resolved) {
             this.open(
               "Reset Identity",
-              "Are you really sure you want to reset your identity ? You will lose the current one forever!"
+              "Are you really sure you want to reset your identity? You will lose the current one forever!"
             )
               .then((resolved) => {
                 if (resolved) {
                   localStorage.clear();
                   location.reload();
+                  this.$router.push("/identity");
                 } else {
                   this.showConfirmModal = false;
                 }
@@ -235,7 +251,7 @@ export default {
     createIdentity() {
       this.pin = '';
       this.pinDialog = 3;
-      this.pinMessage = 'Please choose a new PIN';
+      this.pinMessage = 'Please choose a new Passcode';
       this.showPinDialog = true;
     },
 
@@ -244,7 +260,7 @@ export default {
         this.pin = '';
         this.pinDialog = 1;
         this.showPinDialog = true;
-        this.pinMessage = 'Please enter your PIN';
+        this.pinMessage = 'Please enter your Passcode';
       } else {
         if (chainClient.loadWallet(this.returnRememberedPIN) !== 'authError') {
           this.privateKey = chainClient.wallet().phrase;
@@ -258,11 +274,11 @@ export default {
         this.pin = '';
         this.pinDialog = 2;
         this.showPinDialog = true;
-        this.pinMessage = 'Please enter your PIN';
+        this.pinMessage = 'Please enter your Passcode';
       } else {
         if (chainClient.loadWallet(this.returnRememberedPIN) !== 'authError') {
           this.privateKey = chainClient.wallet().phrase;
-          this.inputMessage = 'Private Key Mnemonic*';
+          this.inputMessage = 'Recovery phrase';
           this.importDialog = true;
         }
       }
@@ -271,8 +287,8 @@ export default {
     restoreIdentityAtStart() {
       this.check = false;
       this.pin = "";
-      this.pinMessage = "Please choose a new PIN";
-      this.inputMessage = 'Private Key Mnemonic*';
+      this.pinMessage = "Please choose a new Passcode";
+      this.inputMessage = 'Recovery phrase';
       this.pinDialog = 10;
       this.showPinDialog = true;
     },
@@ -287,7 +303,7 @@ export default {
           this.$root.$emit("walletEvent");
           this.$root.$emit(
             "alertOn",
-            "Identity restored successfully!",
+            "Identity recovered successfully!",
             "green"
           );
           this.importDialog = false;
@@ -300,13 +316,13 @@ export default {
           this.$root.$emit("walletEvent");
           this.$root.$emit(
             "alertOn",
-            "Identity restored successfully!",
+            "Identity recovered successfully!",
             "green"
           );
           this.importDialog = false;
           location.reload();
         } else {
-          this.$root.$emit("alertOn", "PIN mismatch.", "red");
+          this.$root.$emit("alertOn", "Passcode mismatch.", "red");
         }
       } else {
         this.$root.$emit(
@@ -324,28 +340,28 @@ export default {
           this.privateKeyDialog = true;
           this.pinAutomation(this.returnAutomation, this.pin);
         } else {
-          this.$root.$emit('alertOn', 'PIN mismatch.', 'red');
+          this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
         }
         this.showPinDialog = false;
       } else if (this.pinDialog === 2) {
         if (chainClient.loadWallet(this.pin) !== 'authError') {
           this.privateKey = chainClient.wallet().phrase;
-          this.inputMessage = 'Private Key Mnemonic*';
+          this.inputMessage = 'Recovery phrase';
           this.importDialog = true;
         } else {
-          this.$root.$emit('alertOn', 'PIN mismatch.', 'red');
+          this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
         }
         this.showPinDialog = false;
       } else if (this.pinDialog === 3) {
         if (this.pin.length < 4) {
           this.$root.$emit(
             'alertOn',
-            'PIN must be at least 4 characters long!',
+            'Passcode must be at least 4 characters long!',
             'red',
           );
         } else {
           this.check = true;
-          this.pinMessage = 'Please repeat your new PIN';
+          this.pinMessage = 'Please repeat your new Passcode';
           this.pin1 = this.pin;
           this.pin = '';
           this.pinDialog = 4;
@@ -355,7 +371,7 @@ export default {
         if (this.pin.length < 4) {
           this.$root.$emit(
             "alertOn",
-            "PIN must be at least 4 characters long!",
+            "Passcode must be at least 4 characters long!",
             "red"
           );
         } else {
@@ -370,7 +386,7 @@ export default {
         if (this.pin.length < 4) {
           this.$root.$emit(
             "alertOn",
-            "PIN must be at least 4 characters long!",
+            "Passcode must be at least 4 characters long!",
             "red"
           );
         } else {
@@ -400,7 +416,7 @@ export default {
           this.pinDialog = 0;
           this.showPinDialog = false;
           this.pin = "";
-          this.$root.$emit("alertOn", "PIN mismatch.", "red");
+          this.$root.$emit("alertOn", "Passcode mismatch.", "red");
         }
       }
     },
@@ -427,12 +443,12 @@ export default {
         if (check) {
           this.showPinDialog = false;
           await this.rememberPIN(PIN);
-          this.$root.$emit('alertOn', 'PIN remembered successfully!', 'green');
+          this.$root.$emit('alertOn', 'Passcode remembered successfully!', 'green');
         }
       } else {
         this.$root.$emit(
           'alertOn',
-          'You cannot remember your PIN, while in PINless mode',
+          'You cannot remember your Passcode, while in PINless mode',
           'red',
         );
       }

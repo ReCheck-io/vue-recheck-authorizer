@@ -14,7 +14,7 @@ export default Vue.extend({
 <template>
   <div id="app">
     <h3 class="title">Scanner</h3>
-    <RecheckScanner :handledByComponent="true" :useIntegratedCamera="false" />
+    <RecheckScanner :handledByComponent="true" :useIntegratedCamera="true" />
     <hr />
     <h3 class="title">Identity</h3>
     <RecheckIdentity />
@@ -24,6 +24,8 @@ export default Vue.extend({
 <style>
 body {
   margin: 0;
+  padding-left: 16px;
+  padding-right: 16px;
   font-family: -apple-system, Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 16px;
   font-weight: 400;

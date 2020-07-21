@@ -1,5 +1,5 @@
 {
-  "version": "1.0.24",
+  "version": "1.0.41",
   "name": "vue-recheck-authorizer",
   "description": "A set of Vue.js components for authentication and data interaction with Recheck Platform.",
   "repository": "https://github.com/recheck-io/vue-recheck-authorizer.git",
@@ -23,7 +23,8 @@
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
     "format": "prettier --write 'src/**/*.{js,vue}'",
     "build:docs": "vuepress build docs",
-    "deploy-docs": "sh ./deploy.sh"
+    "deploy-docs": "sh ./deploy.sh",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "aes256": "^1.0.4",

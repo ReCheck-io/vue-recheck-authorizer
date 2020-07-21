@@ -19,7 +19,7 @@
       :rememberPin="false"
       v-model="pinCode"
     >
-      <template #header>Your PIN</template>
+      <template #header>Your Passcode</template>
       <template #footer>
         <button type="button" class="btn" @click="cancelPin">Cancel</button>
         <button type="button" class="btn" @click="confirmPin">Confirm</button>
@@ -92,14 +92,19 @@ export default {
   },
 
   mounted() {
-    chainClient.setURLandNetwork(this.apiEnv[0], this.apiEnv[1]);
     this.pinned = chainClient.pinned();
 
     if (!this.$router) {
       alert("Hey you don't have Vue Router!");
     }
 
-    this.setupCamera();
+    if (this.apiEnv !== "") {
+      chainClient.setURLandNetwork(this.apiEnv[0], this.apiEnv[1]);
+    }
+
+    if (this.pinned) {
+      this.setupCamera();
+    }
   },
 
   methods: {
@@ -132,6 +137,11 @@ export default {
 
       if (decodedString.indexOf('/login') > 0) {
         this.pinCase = 'login';
+        if (this.apiEnv === "") {
+          let apiUrl = decodedString.split("/login")[0];
+          localStorage.setItem("apiUrl", apiUrl)
+          chainClient.setURLandNetwork(apiUrl, "ae");
+        }
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);
         } else {
@@ -159,8 +169,8 @@ export default {
         } else {
           this.handleDecode(
             this.pinCase,
-            'Document Share Request',
-            'You are about to share a document by email. Are you sure?',
+            'Document Email Share Request',
+            'You are about to share a document by email. Are you sure?'
           );
         }
       } else if (decodedString.startsWith('sg:')) {
@@ -190,21 +200,22 @@ export default {
 
     doLogin() {
       this.$root.$emit('loaderOn');
-
       chainClient.doLogin(this.pinCode, this.decodedString, (err) => {
         this.$root.$emit('loaderOff');
         if (!err) {
           this.$root.$emit('alertOn', 'Login data sent successfully.', 'green');
         } else {
           if (err === 'authError') {
-            this.$root.$emit('alertOn', 'PIN mismatch!', 'red');
+            this.$root.$emit('alertOn', 'Passcode mismatch!', 'red');
           } else {
             this.$root.$emit('alertOn', 'Unable to send login data', 'red');
           }
-          this.$router.push('/');
         }
+        this.$emit('scan-result', err);
+        setTimeout(() => this.setupCamera(), 2000);
       });
       this.pinCode = '';
+      this.pinCase = '';
     },
 
     doExecSelection() {
@@ -226,7 +237,7 @@ export default {
           }
         } else {
           if (err === 'authError') {
-            this.$root.$emit('alertOn', 'PIN mismatch!', 'red');
+            this.$root.$emit('alertOn', 'Passcode mismatch!', 'red');
           } else {
             if (this.pinCase === 'sign') {
               this.$root.$emit('alertOn', 'Failed to sign data.', 'red');
@@ -236,9 +247,11 @@ export default {
               this.$root.$emit('alertOn', 'Failed to decrypt data.', 'red');
             }
           }
-          this.$router.push('/');
         }
+        this.$emit('scan-result', err);
+        setTimeout(() => this.setupCamera(), 2000);
       });
+      this.pinCase = '';
       this.pinCode = '';
     },
 
@@ -253,23 +266,28 @@ export default {
     },
 
     confirmPin() {
-      if (this.pinCase === 'login') {
-        this.doLogin();
-      } else if (this.pinCase === 'decrypt') {
-        this.doExecSelection();
-      } else if (this.pinCase === 'share') {
-        this.doExecSelection();
-      } else if (this.pinCase === 'sign') {
-        this.doExecSelection();
+      if (this.checkPin(this.pinCode)) {
+        if (chainClient.checkPassword(this.pinCode)) {
+          if (this.pinCase === 'login') {
+            this.doLogin();  
+          } else if (['share','decrypt','sign'].includes(this.pinCase)) {
+            this.doExecSelection();
+          }
+          this.showPinModal = false;      
+        } else {
+          this.$root.$emit("alertOn", "Passcode is incorrect!", "red");
+          this.pinCode = "";
+        }
+      } else {
+        this.$root.$emit("alertOn", "Passcode is incorrect!", "red");
+        this.pinCode = "";
       }
-      this.setupCamera();
-      this.showPinModal = false;
     },
 
     cancelPin() {
-      this.setupCamera();
       this.pinCode = '';
       this.showPinModal = false;
+      setTimeout(() => this.setupCamera(), 300);
     },
 
     handleDecode(pinCase, title, message) {
@@ -281,24 +299,15 @@ export default {
             } else {
               if (pinCase === 'login') {
                 this.doLogin();
-                this.setupCamera();
-              } else if (
-                pinCase === 'share' ||
-                pinCase === 'decrypt' ||
-                pinCase === 'sign'
-              ) {
-                this.doExecSelection();
-                this.setupCamera();
+              } else {
+                this.confirmPin();
               }
             }
           } else {
-            this.$router.push('/');
+            setTimeout(() => this.setupCamera(), 300);
           }
         })
-        .catch(() => {
-          this.$root.$emit('loaderOff');
-          this.$router.push('/');
-        });
+        .catch(() => this.$root.$emit('loaderOff'));
     },
 
     setupCamera() {
@@ -313,7 +322,23 @@ export default {
           }
         });
       }
-    }
+    },
+
+    checkPin(pin) {
+      if (pin === "") {
+        return false;
+      } else {
+        if (pin === undefined) {
+          return false;
+        } else {
+          if (pin.length < 3) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      }
+    },
   },
 };
 </script>

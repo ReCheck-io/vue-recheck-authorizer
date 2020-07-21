@@ -15,7 +15,7 @@ export default {
       visible: false,
       message: '',
       color: '',
-      timeout: 3000,
+      timeout: 2000,
     };
   },
 
