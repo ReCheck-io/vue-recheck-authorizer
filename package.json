@@ -1,5 +1,5 @@
 {
-  "version": "1.0.41",
+  "version": "1.0.44",
   "name": "vue-recheck-authorizer",
   "description": "A set of Vue.js components for authentication and data interaction with Recheck Platform.",
   "repository": "https://github.com/recheck-io/vue-recheck-authorizer.git",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "aes256": "^1.0.4",
-    "recheck-clientjs-library": "1.0.18-beta.1",
+    "recheck-clientjs-library": "1.0.20-beta",
     "vue-qrcode-reader": "^2.3.3"
   },
   "devDependencies": {

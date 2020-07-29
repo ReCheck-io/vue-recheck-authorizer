@@ -75,7 +75,7 @@ export default {
       initialized: false,
       decodedString: '',
       componentHandled: this.handledByComponent,
-      apiEnv: process.env.VUE_APP_API_ENV 
+      apiEnv: process.env.VUE_APP_API_ENV !== ""
         ? process.env.VUE_APP_API_ENV.split(",") 
         : "",
 
@@ -93,6 +93,7 @@ export default {
 
   mounted() {
     this.pinned = chainClient.pinned();
+    chainClient.setInstance("ReCheckAPP");
 
     if (!this.$router) {
       alert("Hey you don't have Vue Router!");
@@ -100,6 +101,11 @@ export default {
 
     if (this.apiEnv !== "") {
       chainClient.setURLandNetwork(this.apiEnv[0], this.apiEnv[1]);
+    } else {
+      let savedApiUrl = localStorage.getItem("apiUrl")
+      if (savedApiUrl && savedApiUrl !== null) {
+        chainClient.setURLandNetwork(savedApiUrl, "ae");
+      }
     }
 
     if (this.pinned) {

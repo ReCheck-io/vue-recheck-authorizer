@@ -6,13 +6,18 @@ import { logger } from '../utils/logger';
 var wallet = null;
 var keyPair = null;
 
-let environment = process.env.VUE_APP_API_ENV
+let environment = process.env.VUE_APP_API_ENV !== ""
   ? process.env.VUE_APP_API_ENV.split(",")
   : "";
 
-let apiUrl = environment[0]
+let apiUrl = environment !== "" ? environment[0] : ""
+
+logger(process.env)
 
 const chain = {
+  setInstance: function (newInstance = "ReCheckAPP") {
+    e2e.setDefaultRequestId(newInstance)
+  },
   setURLandNetwork: function (apiURL, network) {
     apiUrl = apiURL;
     e2e.init(apiURL, network);
