@@ -28,13 +28,15 @@ export const store = new Vuex.Store({
       alert("Your automated PIN entry service has ended ");
     },
     startTiming: (state, payload) => {
+      if (!state.automatedPIN) {
+        alert(
+          "Your Passcode is has been saved for the next " +
+          state.timeToRemember / 60000 +
+          " minutes"
+        );
+      }
       state.automatedPIN = true;
       state.savedPIN = payload;
-      alert(
-        "Your Passcode is has been saved for the next " +
-        state.timeToRemember / 60000 +
-        " minutes"
-      );
     },
     rememberTime: (state, payload) => {
       state.timeToRemember = payload;

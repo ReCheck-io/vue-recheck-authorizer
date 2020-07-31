@@ -26,7 +26,7 @@
       </card>
 
       <!-- User Identity settings (restore identity & backup identity) -->
-      <card>
+      <card :class="{ 'do-backup': !backupDone }">
         <template #header>Backup &amp; Recover</template>
         <p>
           We <strong>STRONGLY RECOMMEND</strong> to write down your recovery phrase in order to be able to restore your identity.
@@ -181,6 +181,8 @@ export default {
       message: '',
       resolve: null,
       reject: null,
+
+      backupDone: localStorage.getItem("backupDone"),
     };
   },
 
@@ -195,6 +197,8 @@ export default {
     if (!this.$store) {
       alert('Hey you need Vuex in order to use this component!');
     }
+
+    this.backupDone = localStorage.getItem("backupDone");
   },
 
   methods: {
@@ -235,9 +239,10 @@ export default {
             )
               .then((resolved) => {
                 if (resolved) {
-                  localStorage.clear();
-                  location.reload();
-                  this.$router.push("/identity");
+                  this.pin = '';
+                  this.pinDialog = 9;
+                  this.pinMessage = 'Please enter your Passcode';
+                  this.showPinDialog = true;
                 } else {
                   this.showConfirmModal = false;
                 }
@@ -253,6 +258,11 @@ export default {
       this.pinDialog = 3;
       this.pinMessage = 'Please choose a new Passcode';
       this.showPinDialog = true;
+      this.backupDone = false;
+
+      if (!localStorage.getItem("backupDone")) {
+        localStorage.setItem("backupDone", false);
+      }
     },
 
     backupIdentity() {
@@ -314,12 +324,12 @@ export default {
           await chainClient.importPrivateKey(this.pin, this.privateKey);
           this.$root.$emit("loaderOff");
           this.$root.$emit("walletEvent");
+          this.importDialog = false;
           this.$root.$emit(
             "alertOn",
             "Identity recovered successfully!",
             "green"
           );
-          this.importDialog = false;
           location.reload();
         } else {
           this.$root.$emit("alertOn", "Passcode mismatch.", "red");
@@ -339,6 +349,14 @@ export default {
           this.privateKey = chainClient.wallet().phrase;
           this.privateKeyDialog = true;
           this.pinAutomation(this.returnAutomation, this.pin);
+          
+          localStorage.setItem("backupDone", true);
+          this.backupDone = localStorage.getItem("backupDone");
+          let card = document.querySelector(".card");
+            card.classList.contains("do-backup") 
+              ? card.classList.remove("do-backup") 
+              : "";
+          
         } else {
           this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
         }
@@ -418,6 +436,14 @@ export default {
           this.pin = "";
           this.$root.$emit("alertOn", "Passcode mismatch.", "red");
         }
+      } else if (this.pinDialog === 9) {
+        if (chainClient.loadWallet(this.pin) !== 'authError') {
+          localStorage.clear();
+          location.reload();
+        } else {
+          this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
+        }
+        this.showPinDialog = false;
       }
     },
 
@@ -471,3 +497,4 @@ export default {
   },
 };
 </script>
+

@@ -18,6 +18,7 @@
       :isVisible="showPinModal"
       :rememberPin="false"
       v-model="pinCode"
+      :checkboxValue.sync="automation"
     >
       <template #header>Your Passcode</template>
       <template #footer>
@@ -75,10 +76,11 @@ export default {
       initialized: false,
       decodedString: '',
       componentHandled: this.handledByComponent,
-      apiEnv: process.env.VUE_APP_API_ENV !== ""
+      apiEnv: process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !== ""
         ? process.env.VUE_APP_API_ENV.split(",") 
         : "",
 
+      automation: false,
       showPinModal: false,
       pinCase: 'login',
       pinCode: '',

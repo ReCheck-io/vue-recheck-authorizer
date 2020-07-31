@@ -63,6 +63,15 @@
 			}
 		}
 
+		&-primary {
+			background-color: #025388;
+			color: #fff;
+
+			&:hover {
+				background-color: darken(#025388, 9%);
+			}
+		}
+
 		&:not(:last-child) {
 			margin-right: 8px;
 		}

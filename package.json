@@ -1,5 +1,5 @@
 {
-  "version": "1.0.44",
+  "version": "1.0.46",
   "name": "vue-recheck-authorizer",
   "description": "A set of Vue.js components for authentication and data interaction with Recheck Platform.",
   "repository": "https://github.com/recheck-io/vue-recheck-authorizer.git",
@@ -16,7 +16,7 @@
     "src/utils/*.js"
   ],
   "scripts": {
-    "serve": "vue-cli-service serve dev/serve.js",
+    "serve": "vue-cli-service serve dev/serve.js --mode localhost",
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",

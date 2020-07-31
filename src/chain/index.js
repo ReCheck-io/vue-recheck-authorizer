@@ -6,7 +6,7 @@ import { logger } from '../utils/logger';
 var wallet = null;
 var keyPair = null;
 
-let environment = process.env.VUE_APP_API_ENV !== ""
+let environment = process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !== ""
   ? process.env.VUE_APP_API_ENV.split(",")
   : "";
 
@@ -18,6 +18,7 @@ const chain = {
   setInstance: function (newInstance = "ReCheckAPP") {
     e2e.setDefaultRequestId(newInstance)
   },
+
   setURLandNetwork: function (apiURL, network) {
     apiUrl = apiURL;
     e2e.init(apiURL, network);
@@ -133,7 +134,7 @@ const chain = {
     if (!this.checkPassword(password)) {
       return 'authError'
     }
-    this.restoreIdentityAtStart(password, phrase)
+    await this.restoreIdentityAtStart(password, phrase)
   },
 
   doLogin: async function (password, _challenge, callback) {

@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   position: fixed;
-  bottom: 1rem;
+  bottom: 64px;
   left: calc(50% - 140px);
   margin: 0 auto;
   z-index: 9999;
@@ -68,6 +68,23 @@
   }
 }
 
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(red, 0.7);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 10px rgba(red, 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(red, 0);
+	}
+}
+
 .camera {
   width: 100%;
   max-width: 560px;
@@ -76,6 +93,28 @@
 
 .identity {
   text-align: center;
+}
+
+.current-identity {
+  .card.do-backup:nth-of-type(2) {
+    .card-footer {
+      position: relative;
+
+      &:after {
+        content: "";
+        width: 32px;
+        height: 32px;
+        border-radius: 32px;
+        transform: scale(1);
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 0 0 rgba(red, 1);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24' stroke='red'%3E%3Cpath d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'%3E%3C/path%3E%3C/svg%3E");
+        position: absolute;
+        left: 8px;
+        top: -10px;
+      }
+    }
+  }
 }
 
 .publicAddress {
