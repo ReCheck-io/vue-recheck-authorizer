@@ -17,7 +17,7 @@
     <input-modal
       :isVisible="showPinModal"
       :rememberPin="false"
-      v-model="pinCode"
+      :inputValue.sync="pinCode"
       :checkboxValue.sync="automation"
     >
       <template #header>Your Passcode</template>
@@ -79,6 +79,9 @@ export default {
       apiEnv: process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !== ""
         ? process.env.VUE_APP_API_ENV.split(",") 
         : "",
+      apiNetwork: process.env.VUE_APP_NETWORK_URL && process.env.VUE_APP_NETWORK_URL !== ""
+        ? process.env.VUE_APP_NETWORK_URL
+        : "",
 
       automation: false,
       showPinModal: false,
@@ -104,9 +107,10 @@ export default {
     if (this.apiEnv !== "") {
       chainClient.setURLandNetwork(this.apiEnv[0], this.apiEnv[1]);
     } else {
+      const currentNetwork = this.apiNetwork !== "" ? this.apiNetwork : "ae";
       let savedApiUrl = localStorage.getItem("apiUrl")
       if (savedApiUrl && savedApiUrl !== null) {
-        chainClient.setURLandNetwork(savedApiUrl, "ae");
+        chainClient.setURLandNetwork(savedApiUrl, currentNetwork);
       }
     }
 
@@ -147,8 +151,9 @@ export default {
         this.pinCase = 'login';
         if (this.apiEnv === "") {
           let apiUrl = decodedString.split("/login")[0];
+          const currentNetwork = this.apiNetwork !== "" ? this.apiNetwork : "ae";
           localStorage.setItem("apiUrl", apiUrl)
-          chainClient.setURLandNetwork(apiUrl, "ae");
+          chainClient.setURLandNetwork(apiUrl, currentNetwork);
         }
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);

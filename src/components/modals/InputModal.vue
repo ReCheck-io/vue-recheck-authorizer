@@ -16,9 +16,18 @@
             {{ inputLabel }}
             <input
               :type="inputType"
-              :value="value"
+              :value="inputValue"
               :placeholder="inputPlaceholder"
-              @input="updateInput($event.target.value)"
+              @input="updateInput1($event.target.value)"
+              required
+            />
+          </label>
+          <label class="inputLabel" v-if="showPinConfirmInput">
+            <input
+              :type="inputType"
+              :value="pinConfirmValue"
+              :placeholder="inputPlaceholder2"
+              @input="updateInput2($event.target.value)"
               required
             />
           </label>
@@ -65,7 +74,10 @@ export default {
       validator: (value) =>
         ['hidden', 'text', 'password'].indexOf(value) !== -1,
     },
-    value: {
+    inputValue: {
+      type: String,
+    },
+    pinConfirmValue: {
       type: String,
     },
     rememberPin: {
@@ -80,11 +92,22 @@ export default {
       type: String,
       default: 'Your Passcode',
     },
+    inputPlaceholder2: {
+      type: String,
+      default: 'Please repeat your Passcode',
+    },
+    showPinConfirmInput: {
+      type: Boolean,
+      default: false,
+    }
   },
 
   methods: {
-    updateInput(value) {
-      this.$emit('input', value);
+    updateInput1(value) {
+      this.$emit('update:inputValue', value);
+    },
+    updateInput2(value) {
+      this.$emit('update:confirmPinCode', value);
     },
     updateCheckbox(newValue) {
       this.$emit('update:checkboxValue', newValue);

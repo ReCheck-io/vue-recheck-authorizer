@@ -1,5 +1,5 @@
 {
-  "version": "1.0.47",
+  "version": "1.0.55",
   "name": "vue-recheck-authorizer",
   "description": "A set of Vue.js components for authentication and data interaction with Recheck Platform.",
   "repository": "https://github.com/recheck-io/vue-recheck-authorizer.git",

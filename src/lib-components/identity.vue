@@ -1,7 +1,7 @@
 <template>
   <div class="identity" :class="classes">
     <!-- Current user identity -->
-    <div v-if="pinned" class="current-identity">
+    <div v-if="pinned && !backupMode" class="current-identity">
       <card>
         <template #header>My ReCheck Identity</template>
         <h4 class="publicAddress" @click="copyStringToClipboard(publicAddress)">
@@ -34,9 +34,6 @@
         <template #footer>
           <button type="button" class="btn" @click="backupIdentity">
             Backup
-          </button>
-          <button type="button" class="btn" @click="restoreIdentity">
-            Recover
           </button>
         </template>
       </card>
@@ -78,9 +75,12 @@
     <input-modal
       :isVisible="showPinDialog"
       :inputLabel="pinMessage"
-      v-model="pin"
+      :inputLabel2="pinMessage2"
+      :confirmPinCode.sync="pin1"
+      :inputValue.sync="pin"
       :rememberPin="true"
       :checkboxValue.sync="automation"
+      :showPinConfirmInput="showPinConfirmInput"
     >
       <template #header>Your Passcode</template>
       <template #footer>
@@ -90,7 +90,7 @@
     </input-modal>
     <input-modal
       :isVisible="importDialog"
-      v-model="privateKey"
+      :inputValue.sync="privateKey"
       inputType="text"
       :inputLabel="inputMessage"
       inputPlaceholder="Please enter your recovery phrase."
@@ -156,6 +156,10 @@ export default {
       type: String,
       default: '',
     },
+    mobileBackup: {
+      type: Boolean,
+      default: false,
+    }
   },
 
   data() {
@@ -167,14 +171,16 @@ export default {
       pinMessage: '',
 
       pin: '',
+      pin1: '',
       check: false,
 
-      // Pin dialog types / 1 - Backup / 2 - Restore / 3 - New Identity pin / 4 - Confirm new pin
       pinDialog: 0,
       automation: false,
       importDialog: false,
       showPinDialog: false,
       privateKeyDialog: false,
+      showPinConfirmInput: false,
+      pinMessage2: "Please repeat your Passcode",
 
       showConfirmModal: false,
       title: '',
@@ -182,7 +188,8 @@ export default {
       resolve: null,
       reject: null,
 
-      backupDone: localStorage.getItem("backupDone"),
+      backupDone: false,
+      backupMode: false,
     };
   },
 
@@ -198,7 +205,9 @@ export default {
       alert('Hey you need Vuex in order to use this component!');
     }
 
-    this.backupDone = localStorage.getItem("backupDone");
+    this.backupDone = localStorage.getItem("backupDone") 
+      ? JSON.parse(localStorage.getItem("backupDone"))
+      : false;
   },
 
   methods: {
@@ -235,14 +244,12 @@ export default {
           if (resolved) {
             this.open(
               "Reset Identity",
-              "Are you really sure you want to reset your identity? You will lose the current one forever!"
+              "Are you really sure you want to reset your identity? You will lose the current one FOREVER!"
             )
               .then((resolved) => {
                 if (resolved) {
-                  this.pin = '';
-                  this.pinDialog = 9;
-                  this.pinMessage = 'Please enter your Passcode';
-                  this.showPinDialog = true;
+                  localStorage.clear();
+                  location.reload();
                 } else {
                   this.showConfirmModal = false;
                 }
@@ -255,14 +262,12 @@ export default {
 
     createIdentity() {
       this.pin = '';
-      this.pinDialog = 3;
+      this.pin1 = '';
+      this.pinDialog = 2;
+      this.showPinConfirmInput = true;
       this.pinMessage = 'Please choose a new Passcode';
       this.showPinDialog = true;
       this.backupDone = false;
-
-      if (!localStorage.getItem("backupDone")) {
-        localStorage.setItem("backupDone", false);
-      }
     },
 
     backupIdentity() {
@@ -279,27 +284,14 @@ export default {
       }
     },
 
-    restoreIdentity() {
-      if (chainClient.pinned() && !this.$store.state.automatedPIN) {
-        this.pin = '';
-        this.pinDialog = 2;
-        this.showPinDialog = true;
-        this.pinMessage = 'Please enter your Passcode';
-      } else {
-        if (chainClient.loadWallet(this.returnRememberedPIN) !== 'authError') {
-          this.privateKey = chainClient.wallet().phrase;
-          this.inputMessage = 'Recovery phrase';
-          this.importDialog = true;
-        }
-      }
-    },
-
     restoreIdentityAtStart() {
       this.check = false;
       this.pin = "";
+      this.pin1 = "";
+      this.showPinConfirmInput = true;
       this.pinMessage = "Please choose a new Passcode";
       this.inputMessage = 'Recovery phrase';
-      this.pinDialog = 10;
+      this.pinDialog = 3;
       this.showPinDialog = true;
     },
 
@@ -344,106 +336,97 @@ export default {
     },
 
     async confirmPin() {
-      if (this.pinDialog === 1) {
-        if (chainClient.loadWallet(this.pin) !== 'authError') {
-          this.privateKey = chainClient.wallet().phrase;
-          this.privateKeyDialog = true;
-          this.pinAutomation(this.returnAutomation, this.pin);
-          
-          localStorage.setItem("backupDone", true);
-          this.backupDone = localStorage.getItem("backupDone");
-          let card = document.querySelector(".card");
-            card.classList.contains("do-backup") 
-              ? card.classList.remove("do-backup") 
-              : "";
-          
-        } else {
-          this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
-        }
-        this.showPinDialog = false;
-      } else if (this.pinDialog === 2) {
-        if (chainClient.loadWallet(this.pin) !== 'authError') {
-          this.privateKey = chainClient.wallet().phrase;
-          this.inputMessage = 'Recovery phrase';
-          this.importDialog = true;
-        } else {
-          this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
-        }
-        this.showPinDialog = false;
-      } else if (this.pinDialog === 3) {
-        if (this.pin.length < 4) {
-          this.$root.$emit(
-            'alertOn',
-            'Passcode must be at least 4 characters long!',
-            'red',
-          );
-        } else {
-          this.check = true;
-          this.pinMessage = 'Please repeat your new Passcode';
-          this.pin1 = this.pin;
+      if (this.pin === "") {
+        this.$root.$emit('alertOn', 'Passcode must be at least 4 characters!', 'red');
+      } else {
+        if (this.pinDialog === 1) { // Backup
+          if (chainClient.loadWallet(this.pin) !== 'authError') {
+            this.privateKey = chainClient.wallet().phrase;
+            if (this.mobileBackup) {
+              this.backupMode = true;
+              this.$root.$emit("backupMode", {
+                "privateKey": this.privateKey,
+                "backupMode": this.backupMode
+              });
+            } else {
+              this.privateKeyDialog = true;
+              this.pinAutomation(this.returnAutomation, this.pin);
+
+              this.backupDone = true;
+              localStorage.setItem('backupDone', true);
+
+              const card = document.querySelector('.card');
+              if (this.backupDone === true && card.classList.contains('do-backup')) {
+                card.classList.remove('do-backup');
+              }
+            }
+          } else {
+            this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
+          }
+
           this.pin = '';
-          this.pinDialog = 4;
-          this.showPinDialog = true;
-        }
-      } else if (this.pinDialog === 10) {
-        if (this.pin.length < 4) {
-          this.$root.$emit(
-            "alertOn",
-            "Passcode must be at least 4 characters long!",
-            "red"
-          );
-        } else {
-          this.check = true;
-          this.pinMessage = "Please repeat your new PIN";
-          this.pin1 = this.pin;
-          this.pin = "";
-          this.pinDialog = 11;
-          this.showPinDialog = true;
-        }
-      } else if (this.pinDialog === 11) {
-        if (this.pin.length < 4) {
-          this.$root.$emit(
-            "alertOn",
-            "Passcode must be at least 4 characters long!",
-            "red"
-          );
-        } else {
-          this.pin2 = this.pin;
-          if (this.pin1 === this.pin2) {
-            this.showPinDialog = false;
-            this.importDialog = true;
+          this.pin1 = '';
+          this.pinDialog = 0;
+          this.showPinConfirmInput = false;
+          this.showPinDialog = false;
+        } else if (this.pinDialog === 2) { // New identity pin
+          if (this.pin.length < 4 || this.pin1.length < 4) {
+            this.$root.$emit(
+              'alertOn',
+              'Passcode must be at least 4 characters long!',
+              'red',
+            );
+            this.pin = '';
+            this.pin1 = '';
+          } else {
+            if (this.pin === this.pin1) {
+              this.check = true;
+              this.showPinDialog = false;
+              this.$root.$emit("loaderOn");
+              await chainClient.init(this.pin);
+              this.pinned = chainClient.pinned();
+              this.pinAutomation(this.returnAutomation, this.pin);
+              this.$root.$emit("walletEvent");
+              this.$root.$emit("loaderOff");
+              if (!localStorage.getItem("backupDone")) {
+                localStorage.setItem("backupDone", JSON.stringify(false));
+                this.backupDone = false;
+              } else {
+                this.backupDone = JSON.parse(localStorage.getItem("backupDone"));
+              }
+              this.$root.$emit(
+                "alertOn",
+                "Identity created successfully!",
+                "green"
+              );
+              this.pin = "";
+              this.pin1 = "";
+              this.pinDialog = 0;
+              this.showPinDialog = false;
+              this.showPinConfirmInput = false;
+            } else {
+              this.pin = "";
+              this.pin1 = "";
+              this.$root.$emit("alertOn", "Passcode mismatch.", "red");
+            }
+          }
+        } else if (this.pinDialog === 3) { // Restore 
+          if (this.pin.length < 4 || this.pin1.length < 4) {
+            this.$root.$emit(
+              "alertOn",
+              "Passcode must be at least 4 characters long!",
+              "red"
+            );
+            this.pin = '';
+            this.pin1 = '';
+          } else {
+            if (this.pin === this.pin1) {
+              this.check = true;
+              this.showPinDialog = false;
+              this.importDialog = true;
+            }
           }
         }
-      } else if (this.pinDialog === 4) {
-        this.pin2 = this.pin;
-        if (this.pin1 === this.pin2) {
-          this.check = true;
-          this.showPinDialog = false;
-          this.$root.$emit("loaderOn");
-          await chainClient.init(this.pin);
-          this.pinned = chainClient.pinned();
-          this.pinAutomation(this.returnAutomation, this.pin);
-          this.$root.$emit("walletEvent");
-          this.$root.$emit("loaderOff");
-          this.$root.$emit(
-            "alertOn",
-            "Identity created successfully!",
-            "green"
-          );
-        } else {
-          this.pinDialog = 0;
-          this.showPinDialog = false;
-          this.pin = "";
-          this.$root.$emit("alertOn", "Passcode mismatch.", "red");
-        }
-      } else if (this.pinDialog === 9) {
-        if (chainClient.loadWallet(this.pin) !== 'authError') {
-          localStorage.clear();
-          location.reload();
-        } else {
-          this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
-        }
-        this.showPinDialog = false;
       }
     },
 

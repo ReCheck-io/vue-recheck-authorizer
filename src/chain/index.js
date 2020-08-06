@@ -11,6 +11,9 @@ let environment = process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !==
   : "";
 
 let apiUrl = environment !== "" ? environment[0] : ""
+let network = process.env.VUE_APP_NETWORK_URL && process.env.VUE_APP_NETWORK_URL !== ""
+  ? process.env.VUE_APP_NETWORK_URL
+  : "ae";
 
 logger(process.env)
 
@@ -21,12 +24,13 @@ const chain = {
 
   setURLandNetwork: function (apiURL, network) {
     apiUrl = apiURL;
+    network = network;
     e2e.init(apiURL, network);
   },
 
   init: async function (password) {
     logger('init');
-    e2e.init(apiUrl);
+    e2e.init(apiUrl, network);
     if (!localStorage.walletAe1) {
       logger('Wallet does not exist yet. Will create one.');
       keyPair = await e2e.newKeyPair(null);
