@@ -3,7 +3,7 @@
     <!-- Current user identity -->
     <div v-if="pinned && !backupMode" class="current-identity">
       <card>
-        <template #header>My ReCheck Identity</template>
+        <template #header>My {{ appName }} Identity</template>
         <h4 class="publicAddress" @click="copyStringToClipboard(publicAddress)">
           {{ publicAddress }}
           <svg
@@ -54,7 +54,7 @@
     <!-- New identity -->
     <div v-if="!pinned" class="new-identity">
       <card>
-        <template #header>New ReCheck Identity</template>
+        <template #header>New {{ appName }} Identity</template>
         <p>
           To start using the app, please create or restore your digital identity.
           You will be asked to create and remember your personal security Passcode.
@@ -155,6 +155,10 @@ export default {
     classes: {
       type: String,
       default: '',
+    },
+    appName: {
+      type: String,
+      default: "ReCheck"
     },
     mobileBackup: {
       type: Boolean,
@@ -296,6 +300,10 @@ export default {
     },
 
     async doRestoreIdentity() {
+      if (this.privateKey) {
+        this.privateKey = this.privateKey.toLowerCase();
+      }
+
       if (this.seedCheck(this.privateKey)) {
         if (!chainClient.pinned()) {
           logger("new privateKey", this.privateKey);
@@ -308,6 +316,7 @@ export default {
             "Identity recovered successfully!",
             "green"
           );
+          this.backupDone = true;
           this.importDialog = false;
           location.reload();
         } else if (chainClient.loadWallet(this.pin) !== "authError") {
@@ -322,6 +331,7 @@ export default {
             "Identity recovered successfully!",
             "green"
           );
+          this.backupDone = true;
           location.reload();
         } else {
           this.$root.$emit("alertOn", "Passcode mismatch.", "red");

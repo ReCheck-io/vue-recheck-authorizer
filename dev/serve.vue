@@ -14,10 +14,16 @@ export default Vue.extend({
 <template>
   <div id="app">
     <h3 class="title">Scanner</h3>
-    <RecheckScanner :handledByComponent="true" :useIntegratedCamera="true" />
+    <RecheckScanner
+      appRequestId="ReCheckAPP" 
+      :handledByComponent="true" 
+      :useIntegratedCamera="true"
+    />
+
     <hr />
+    
     <h3 class="title">Identity</h3>
-    <RecheckIdentity />
+    <RecheckIdentity appName="ipOcean" />
   </div>
 </template>
 

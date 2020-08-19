@@ -67,6 +67,10 @@ export default {
       type: String,
       default: '',
     },
+    appRequestId: {
+      type: String,
+      default: "ReCheckAPP"
+    }
   },
 
   data() {
@@ -98,7 +102,7 @@ export default {
 
   mounted() {
     this.pinned = chainClient.pinned();
-    chainClient.setInstance("ReCheckAPP");
+    chainClient.setInstance(this.appRequestId);
 
     if (!this.$router) {
       alert("Hey you don't have Vue Router!");
