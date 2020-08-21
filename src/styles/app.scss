@@ -117,11 +117,6 @@
   }
 }
 
-.backup-identity {
-  // width: 100%;
-  // max-width: 400px;
-}
-
 .publicAddress {
   cursor: pointer;
   font-weight: 500;
@@ -135,4 +130,9 @@
 
 button, .btn {
   cursor: pointer;
+}
+
+p.gray-text {
+  color: #444444;
+  margin-bottom: 12px;
 }

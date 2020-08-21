@@ -20,7 +20,13 @@
       :inputValue.sync="pinCode"
       :checkboxValue.sync="automation"
     >
-      <template #header>Your Passcode</template>
+      <template #header>Passcode
+        {{
+          publicAddress !== '' ? 'for ' + publicAddress.replace(
+            publicAddress.substring(9, publicAddress.length - 9), "..."
+          ) : ''
+        }}
+      </template>
       <template #footer>
         <button type="button" class="btn" @click="cancelPin">Cancel</button>
         <button type="button" class="btn" @click="confirmPin">Confirm</button>
@@ -83,10 +89,11 @@ export default {
       apiEnv: process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !== ""
         ? process.env.VUE_APP_API_ENV.split(",") 
         : "",
-      apiNetwork: process.env.VUE_APP_NETWORK_URL && process.env.VUE_APP_NETWORK_URL !== ""
-        ? process.env.VUE_APP_NETWORK_URL
+      apiNetwork: process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ""
+        ? process.env.VUE_APP_NETWORK
         : "",
 
+      publicAddress: '',
       automation: false,
       showPinModal: false,
       pinCase: 'login',
@@ -103,6 +110,10 @@ export default {
   mounted() {
     this.pinned = chainClient.pinned();
     chainClient.setInstance(this.appRequestId);
+
+    if (this.pinned) {
+      this.publicAddress = localStorage.publicAddress;
+    }
 
     if (!this.$router) {
       alert("Hey you don't have Vue Router!");

@@ -81,8 +81,15 @@
       :rememberPin="true"
       :checkboxValue.sync="automation"
       :showPinConfirmInput="showPinConfirmInput"
+      :publicAddress="publicAddress"
     >
-      <template #header>Your Passcode</template>
+      <template #header>Passcode
+        {{
+          publicAddress !== '' ? 'for ' + publicAddress.replace(
+            publicAddress.substring(9, publicAddress.length - 9), "..."
+          ) : ''
+        }}
+      </template>
       <template #footer>
         <button type="button" class="btn" @click="cancelPin">Cancel</button>
         <button type="button" class="btn primary" @click="confirmPin">Confirm</button>
@@ -192,6 +199,10 @@ export default {
       resolve: null,
       reject: null,
 
+      apiNetwork: process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ""
+        ? process.env.VUE_APP_NETWORK
+        : "ae",
+
       backupDone: false,
       backupMode: false,
     };
@@ -271,7 +282,7 @@ export default {
       this.showPinConfirmInput = true;
       this.pinMessage = 'Please choose a new Passcode';
       this.showPinDialog = true;
-      this.backupDone = false;
+      this.setBackupStatus(false);
     },
 
     backupIdentity() {
@@ -300,41 +311,32 @@ export default {
     },
 
     async doRestoreIdentity() {
-      if (this.privateKey) {
-        this.privateKey = this.privateKey.toLowerCase();
-      }
-
       if (this.seedCheck(this.privateKey)) {
+        this.privateKey = this.privateKey.toLowerCase();
+
         if (!chainClient.pinned()) {
           logger("new privateKey", this.privateKey);
           this.$root.$emit("loaderOn");
-          await chainClient.restoreIdentityAtStart(this.pin, this.privateKey);
-          this.$root.$emit("loaderOff");
-          this.$root.$emit("walletEvent");
-          this.$root.$emit(
-            "alertOn",
-            "Identity recovered successfully!",
-            "green"
-          );
-          this.backupDone = true;
-          this.importDialog = false;
-          location.reload();
-        } else if (chainClient.loadWallet(this.pin) !== "authError") {
-          logger("new privateKey", this.privateKey);
-          this.$root.$emit("loaderOn");
-          await chainClient.importPrivateKey(this.pin, this.privateKey);
-          this.$root.$emit("loaderOff");
-          this.$root.$emit("walletEvent");
-          this.importDialog = false;
-          this.$root.$emit(
-            "alertOn",
-            "Identity recovered successfully!",
-            "green"
-          );
-          this.backupDone = true;
-          location.reload();
-        } else {
-          this.$root.$emit("alertOn", "Passcode mismatch.", "red");
+          
+          try {
+            await chainClient.restoreIdentityAtStart(this.pin, this.privateKey);
+            this.$root.$emit("loaderOff");
+            this.$root.$emit("walletEvent");
+            this.$root.$emit(
+              "alertOn",
+              "Identity recovered successfully!",
+              "green"
+            );
+            this.setBackupStatus(true);
+            this.importDialog = false;
+            location.reload();
+          } catch (error) {
+            this.$root.$emit("loaderOff");
+            this.$root.$emit("alertOn", error, "red");
+            this.setBackupStatus(false);
+            this.importDialog = false;
+          }
+          this.privateKey = '';
         }
       } else {
         this.$root.$emit(
@@ -362,8 +364,7 @@ export default {
               this.privateKeyDialog = true;
               this.pinAutomation(this.returnAutomation, this.pin);
 
-              this.backupDone = true;
-              localStorage.setItem('backupDone', true);
+              this.setBackupStatus(true);
 
               const card = document.querySelector('.card');
               if (this.backupDone === true && card.classList.contains('do-backup')) {
@@ -399,8 +400,7 @@ export default {
               this.$root.$emit("walletEvent");
               this.$root.$emit("loaderOff");
               if (!localStorage.getItem("backupDone")) {
-                localStorage.setItem("backupDone", JSON.stringify(false));
-                this.backupDone = false;
+                this.setBackupStatus(false);
               } else {
                 this.backupDone = JSON.parse(localStorage.getItem("backupDone"));
               }
@@ -455,6 +455,11 @@ export default {
         this.resolve = resolve;
         this.reject = reject;
       });
+    },
+
+    setBackupStatus(status = false) {
+      this.backupDone = status;
+      localStorage.setItem("backupDone", JSON.stringify(status));
     },
 
     async pinAutomation(check, PIN) {

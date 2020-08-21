@@ -90,11 +90,11 @@ export default {
     },
     inputPlaceholder: {
       type: String,
-      default: 'Your Passcode',
+      default: '********',
     },
     inputPlaceholder2: {
       type: String,
-      default: 'Please repeat your Passcode',
+      default: '********',
     },
     showPinConfirmInput: {
       type: Boolean,

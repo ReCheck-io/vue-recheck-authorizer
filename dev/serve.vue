@@ -1,5 +1,6 @@
 <script>
 import Vue from 'vue';
+import chainClient from '@/chain'
 import { RecheckScanner, RecheckIdentity } from '@/entry';
 
 export default Vue.extend({
@@ -7,6 +8,10 @@ export default Vue.extend({
   components: {
     RecheckScanner,
     RecheckIdentity
+  },
+
+  mounted() {
+    chainClient.setURLandNetwork("", process.env.VUE_APP_NETWORK)
   }
 });
 </script>

@@ -11,8 +11,8 @@ let environment = process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !==
   : "";
 
 let apiUrl = environment !== "" ? environment[0] : ""
-let network = process.env.VUE_APP_NETWORK_URL && process.env.VUE_APP_NETWORK_URL !== ""
-  ? process.env.VUE_APP_NETWORK_URL
+let network = process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ""
+  ? process.env.VUE_APP_NETWORK
   : "ae";
 
 logger(process.env)
