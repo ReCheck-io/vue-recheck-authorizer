@@ -23,7 +23,7 @@
       <template #header>Passcode
         {{
           publicAddress !== '' ? 'for ' + publicAddress.replace(
-            publicAddress.substring(9, publicAddress.length - 9), "..."
+            publicAddress.substring(8, publicAddress.length - 4), "..."
           ) : ''
         }}
       </template>
