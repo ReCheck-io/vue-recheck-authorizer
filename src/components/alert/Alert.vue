@@ -26,9 +26,10 @@ export default {
   },
 
   mounted() {
-    this.$root.$on('alertOn', (message, color) => {
+    this.$root.$on('alertOn', (message, color, timeout) => {
       this.visible = true;
       this.message = message;
+      this.timeout = timeout ? timeout : 2000;
       this.color = color === 'green' ? '#89CA02' : '#ff0000';
 
       setTimeout(() => this.hideAlert(), this.timeout);

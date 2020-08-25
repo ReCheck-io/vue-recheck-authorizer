@@ -332,7 +332,12 @@ export default {
             location.reload();
           } catch (error) {
             this.$root.$emit("loaderOff");
-            this.$root.$emit("alertOn", error, "red");
+            this.$root.$emit(
+              "alertOn",
+              "Wrong recovery phrase. Please try again.",
+              "red",
+              3500
+            );
             this.setBackupStatus(false);
             this.importDialog = false;
           }
