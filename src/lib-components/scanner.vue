@@ -2,7 +2,10 @@
   <div class="scanner" :class="classes">
     <alert />
     <loader />
-    <div class="camera" v-if="useIntegratedCamera && pinned && !error.length > 0">
+    <div
+      class="camera"
+      v-if="useIntegratedCamera && pinned && !error.length > 0"
+    >
       <qrcode-stream @init="onInit" @decode="onDecode"></qrcode-stream>
     </div>
 
@@ -20,11 +23,16 @@
       :inputValue.sync="pinCode"
       :checkboxValue.sync="automation"
     >
-      <template #header>Passcode
+      <template #header
+        >Passcode
         {{
-          publicAddress !== '' ? 'for ' + publicAddress.replace(
-            publicAddress.substring(8, publicAddress.length - 4), "..."
-          ) : ''
+          publicAddress !== ''
+            ? 'for ' +
+              publicAddress.replace(
+                publicAddress.substring(8, publicAddress.length - 4),
+                '...',
+              )
+            : ''
         }}
       </template>
       <template #footer>
@@ -36,13 +44,13 @@
 </template>
 
 <script>
-import { QrcodeStream } from 'vue-qrcode-reader'
-import Card from '../components/cards/Card.vue'
-import Alert from '../components/alert/Alert.vue'
-import Loader from '../components/loader/Loader.vue'
-import InfoCard from '../components/cards/InfoCard.vue'
-import InputModal from '../components/modals/InputModal.vue'
-import ConfirmModal from '../components/modals/ConfirmModal.vue'
+import { QrcodeStream } from 'vue-qrcode-reader';
+import Card from '../components/cards/Card.vue';
+import Alert from '../components/alert/Alert.vue';
+import Loader from '../components/loader/Loader.vue';
+import InfoCard from '../components/cards/InfoCard.vue';
+import InputModal from '../components/modals/InputModal.vue';
+import ConfirmModal from '../components/modals/ConfirmModal.vue';
 import chainClient from '../chain/index';
 import { logger } from '../utils/logger';
 
@@ -67,7 +75,7 @@ export default {
     },
     useIntegratedCamera: {
       type: Boolean,
-      default: true
+      default: true,
     },
     classes: {
       type: String,
@@ -75,8 +83,8 @@ export default {
     },
     appRequestId: {
       type: String,
-      default: "ReCheckAPP"
-    }
+      default: 'ReCheckAPP',
+    },
   },
 
   data() {
@@ -86,12 +94,14 @@ export default {
       initialized: false,
       decodedString: '',
       componentHandled: this.handledByComponent,
-      apiEnv: process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !== ""
-        ? process.env.VUE_APP_API_ENV.split(",") 
-        : "",
-      apiNetwork: process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ""
-        ? process.env.VUE_APP_NETWORK
-        : "",
+      apiEnv:
+        process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !== ''
+          ? process.env.VUE_APP_API_ENV.split(',')
+          : '',
+      apiNetwork:
+        process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ''
+          ? process.env.VUE_APP_NETWORK
+          : '',
 
       publicAddress: '',
       automation: false,
@@ -119,11 +129,11 @@ export default {
       alert("Hey you don't have Vue Router!");
     }
 
-    if (this.apiEnv !== "") {
+    if (this.apiEnv !== '') {
       chainClient.setURLandNetwork(this.apiEnv[0], this.apiEnv[1]);
     } else {
-      const currentNetwork = this.apiNetwork !== "" ? this.apiNetwork : "ae";
-      let savedApiUrl = localStorage.getItem("apiUrl")
+      const currentNetwork = this.apiNetwork !== '' ? this.apiNetwork : 'ae';
+      let savedApiUrl = localStorage.getItem('apiUrl');
       if (savedApiUrl && savedApiUrl !== null) {
         chainClient.setURLandNetwork(savedApiUrl, currentNetwork);
       }
@@ -164,10 +174,11 @@ export default {
 
       if (decodedString.indexOf('/login') > 0) {
         this.pinCase = 'login';
-        if (this.apiEnv === "") {
-          let apiUrl = decodedString.split("/login")[0];
-          const currentNetwork = this.apiNetwork !== "" ? this.apiNetwork : "ae";
-          localStorage.setItem("apiUrl", apiUrl)
+        if (this.apiEnv === '') {
+          let apiUrl = decodedString.split('/login')[0];
+          const currentNetwork =
+            this.apiNetwork !== '' ? this.apiNetwork : 'ae';
+          localStorage.setItem('apiUrl', apiUrl);
           chainClient.setURLandNetwork(apiUrl, currentNetwork);
         }
         if (!this.componentHandled) {
@@ -198,7 +209,7 @@ export default {
           this.handleDecode(
             this.pinCase,
             'Document Email Share Request',
-            'You are about to share a document by email. Are you sure?'
+            'You are about to share a document by email. Are you sure?',
           );
         }
       } else if (decodedString.startsWith('sg:')) {
@@ -297,18 +308,18 @@ export default {
       if (this.checkPin(this.pinCode)) {
         if (chainClient.checkPassword(this.pinCode)) {
           if (this.pinCase === 'login') {
-            this.doLogin();  
-          } else if (['share','decrypt','sign'].includes(this.pinCase)) {
+            this.doLogin();
+          } else if (['share', 'decrypt', 'sign'].includes(this.pinCase)) {
             this.doExecSelection();
           }
-          this.showPinModal = false;      
+          this.showPinModal = false;
         } else {
-          this.$root.$emit("alertOn", "Passcode is incorrect!", "red");
-          this.pinCode = "";
+          this.$root.$emit('alertOn', 'Passcode is incorrect!', 'red');
+          this.pinCode = '';
         }
       } else {
-        this.$root.$emit("alertOn", "Passcode is incorrect!", "red");
-        this.pinCode = "";
+        this.$root.$emit('alertOn', 'Passcode is incorrect!', 'red');
+        this.pinCode = '';
       }
     },
 
@@ -343,9 +354,9 @@ export default {
         window.QRScanner.show();
         window.QRScanner.scan((err, contents) => {
           if (err) {
-            logger("scan error: ", err);
+            logger('scan error: ', err);
           } else {
-            logger("scan result: ", contents)
+            logger('scan result: ', contents);
             this.onDecode(contents);
           }
         });
@@ -353,7 +364,7 @@ export default {
     },
 
     checkPin(pin) {
-      if (pin === "") {
+      if (pin === '') {
         return false;
       } else {
         if (pin === undefined) {

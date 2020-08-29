@@ -3,7 +3,7 @@
     <!-- Current user identity -->
     <div v-if="pinned && !backupMode" class="current-identity">
       <card>
-        <template #header>My {{ appName }} Identity</template>
+        <template #header>{{ appName }} Identity</template>
         <h4 class="publicAddress" @click="copyStringToClipboard(publicAddress)">
           {{ publicAddress }}
           <svg
@@ -29,7 +29,8 @@
       <card :class="{ 'do-backup': !backupDone }">
         <template #header>Backup &amp; Recover</template>
         <p>
-          We <strong>STRONGLY RECOMMEND</strong> to write down your recovery phrase in order to be able to restore your identity.
+          We <strong>STRONGLY RECOMMEND</strong> to write down your recovery
+          phrase in order to be able to recover your identity.
         </p>
         <template #footer>
           <button type="button" class="btn" @click="backupIdentity">
@@ -41,7 +42,9 @@
       <card>
         <template #header>Reset Identity</template>
         <p>
-          Reset Identity will remove your current identity. If you have not saved the recovery phrase for your current identity it will be lost <strong>FOREVER</strong>.
+          Reset Identity will remove your current identity. If you have not
+          saved the recovery phrase for your current identity it will be lost
+          <strong>FOREVER</strong>.
         </p>
         <template #footer>
           <button type="button" class="btn danger" @click="resetIdentity">
@@ -56,8 +59,10 @@
       <card>
         <template #header>New {{ appName }} Identity</template>
         <p>
-          To start using the app, please create or restore your digital identity.
-          You will be asked to create and remember your personal security Passcode.
+          To start using the app, please create or recover your ReCheck
+          identity. You will be asked to create and remember your personal
+          security passcode. We recommend writing down the passcode in a secure
+          place - ReCheck cannot help with recovery if you forget it.
         </p>
         <template #footer>
           <button type="button" class="btn" @click="createIdentity">
@@ -83,16 +88,23 @@
       :showPinConfirmInput="showPinConfirmInput"
       :publicAddress="publicAddress"
     >
-      <template #header>Passcode
+      <template #header
+        >Passcode
         {{
-          publicAddress !== '' ? 'for ' + publicAddress.replace(
-            publicAddress.substring(8, publicAddress.length - 4), "..."
-          ) : ''
+          publicAddress !== ''
+            ? 'for ' +
+              publicAddress.replace(
+                publicAddress.substring(8, publicAddress.length - 4),
+                '...',
+              )
+            : ''
         }}
       </template>
       <template #footer>
         <button type="button" class="btn" @click="cancelPin">Cancel</button>
-        <button type="button" class="btn primary" @click="confirmPin">Confirm</button>
+        <button type="button" class="btn primary" @click="confirmPin">
+          Confirm
+        </button>
       </template>
     </input-modal>
     <input-modal
@@ -138,11 +150,11 @@
 <script>
 import chainClient from '../chain/index';
 import identityMixins from '../mixins/index.vue';
-import Card from '../components/cards/Card.vue'
-import Alert from '../components/alert/Alert.vue'
-import Loader from '../components/loader/Loader.vue'
-import InputModal from '../components/modals/InputModal.vue'
-import ConfirmModal from '../components/modals/ConfirmModal.vue'
+import Card from '../components/cards/Card.vue';
+import Alert from '../components/alert/Alert.vue';
+import Loader from '../components/loader/Loader.vue';
+import InputModal from '../components/modals/InputModal.vue';
+import ConfirmModal from '../components/modals/ConfirmModal.vue';
 import { logger } from '../utils/logger';
 
 export default {
@@ -165,12 +177,12 @@ export default {
     },
     appName: {
       type: String,
-      default: "ReCheck"
+      default: 'ReCheck',
     },
     mobileBackup: {
       type: Boolean,
       default: false,
-    }
+    },
   },
 
   data() {
@@ -191,7 +203,7 @@ export default {
       showPinDialog: false,
       privateKeyDialog: false,
       showPinConfirmInput: false,
-      pinMessage2: "Please repeat your Passcode",
+      pinMessage2: 'Please repeat your Passcode',
 
       showConfirmModal: false,
       title: '',
@@ -199,9 +211,10 @@ export default {
       resolve: null,
       reject: null,
 
-      apiNetwork: process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ""
-        ? process.env.VUE_APP_NETWORK
-        : "ae",
+      apiNetwork:
+        process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ''
+          ? process.env.VUE_APP_NETWORK
+          : 'ae',
 
       backupDone: false,
       backupMode: false,
@@ -220,14 +233,14 @@ export default {
       alert('Hey you need Vuex in order to use this component!');
     }
 
-    this.backupDone = localStorage.getItem("backupDone") 
-      ? JSON.parse(localStorage.getItem("backupDone"))
+    this.backupDone = localStorage.getItem('backupDone')
+      ? JSON.parse(localStorage.getItem('backupDone'))
       : false;
   },
 
   methods: {
     seedCheck(seedPhrase) {
-      if (seedPhrase.split(" ").length == 12) {
+      if (seedPhrase.split(' ').length == 12) {
         return true;
       } else {
         return false;
@@ -235,7 +248,7 @@ export default {
     },
 
     checkPin(pin) {
-      if (pin === "") {
+      if (pin === '') {
         return false;
       } else {
         if (pin === undefined) {
@@ -252,27 +265,25 @@ export default {
 
     resetIdentity() {
       this.open(
-        "Reset Identity",
-        "Are you really sure you want to reset your Identity?"
-      )
-        .then((resolved) => {
-          if (resolved) {
-            this.open(
-              "Reset Identity",
-              "Are you really sure you want to reset your identity? You will lose the current one FOREVER!"
-            )
-              .then((resolved) => {
-                if (resolved) {
-                  localStorage.clear();
-                  location.reload();
-                } else {
-                  this.showConfirmModal = false;
-                }
-              })
-          } else {
-            this.showConfirmModal = false;
-          }
-        })
+        'Reset Identity',
+        'Are you really sure you want to reset your Identity?',
+      ).then((resolved) => {
+        if (resolved) {
+          this.open(
+            'Reset Identity',
+            'Are you really sure you want to reset your identity? You will lose the current one FOREVER!',
+          ).then((resolved) => {
+            if (resolved) {
+              localStorage.clear();
+              location.reload();
+            } else {
+              this.showConfirmModal = false;
+            }
+          });
+        } else {
+          this.showConfirmModal = false;
+        }
+      });
     },
 
     createIdentity() {
@@ -301,10 +312,10 @@ export default {
 
     restoreIdentityAtStart() {
       this.check = false;
-      this.pin = "";
-      this.pin1 = "";
+      this.pin = '';
+      this.pin1 = '';
       this.showPinConfirmInput = true;
-      this.pinMessage = "Please choose a new Passcode";
+      this.pinMessage = 'Please choose a new Passcode';
       this.inputMessage = 'Recovery phrase';
       this.pinDialog = 3;
       this.showPinDialog = true;
@@ -315,28 +326,28 @@ export default {
         this.privateKey = this.privateKey.toLowerCase();
 
         if (!chainClient.pinned()) {
-          logger("new privateKey", this.privateKey);
-          this.$root.$emit("loaderOn");
-          
+          logger('new privateKey', this.privateKey);
+          this.$root.$emit('loaderOn');
+
           try {
             await chainClient.restoreIdentityAtStart(this.pin, this.privateKey);
-            this.$root.$emit("loaderOff");
-            this.$root.$emit("walletEvent");
+            this.$root.$emit('loaderOff');
+            this.$root.$emit('walletEvent');
             this.$root.$emit(
-              "alertOn",
-              "Identity recovered successfully!",
-              "green"
+              'alertOn',
+              'Identity recovered successfully!',
+              'green',
             );
             this.setBackupStatus(true);
             this.importDialog = false;
             location.reload();
           } catch (error) {
-            this.$root.$emit("loaderOff");
+            this.$root.$emit('loaderOff');
             this.$root.$emit(
-              "alertOn",
-              "Wrong recovery phrase. Please try again.",
-              "red",
-              3500
+              'alertOn',
+              'Wrong recovery phrase. Please try again.',
+              'red',
+              3500,
             );
             this.setBackupStatus(false);
             this.importDialog = false;
@@ -345,25 +356,30 @@ export default {
         }
       } else {
         this.$root.$emit(
-          "alertOn",
-          "The secret phrase have to be 12 words.",
-          "red"
+          'alertOn',
+          'The secret phrase have to be 12 words.',
+          'red',
         );
       }
     },
 
     async confirmPin() {
-      if (this.pin === "") {
-        this.$root.$emit('alertOn', 'Passcode must be at least 4 characters!', 'red');
+      if (this.pin === '') {
+        this.$root.$emit(
+          'alertOn',
+          'Passcode must be at least 4 characters!',
+          'red',
+        );
       } else {
-        if (this.pinDialog === 1) { // Backup
+        if (this.pinDialog === 1) {
+          // Backup
           if (chainClient.loadWallet(this.pin) !== 'authError') {
             this.privateKey = chainClient.wallet().phrase;
             if (this.mobileBackup) {
               this.backupMode = true;
-              this.$root.$emit("backupMode", {
-                "privateKey": this.privateKey,
-                "backupMode": this.backupMode
+              this.$root.$emit('backupMode', {
+                privateKey: this.privateKey,
+                backupMode: this.backupMode,
               });
             } else {
               this.privateKeyDialog = true;
@@ -372,7 +388,10 @@ export default {
               this.setBackupStatus(true);
 
               const card = document.querySelector('.card');
-              if (this.backupDone === true && card.classList.contains('do-backup')) {
+              if (
+                this.backupDone === true &&
+                card.classList.contains('do-backup')
+              ) {
                 card.classList.remove('do-backup');
               }
             }
@@ -385,7 +404,8 @@ export default {
           this.pinDialog = 0;
           this.showPinConfirmInput = false;
           this.showPinDialog = false;
-        } else if (this.pinDialog === 2) { // New identity pin
+        } else if (this.pinDialog === 2) {
+          // New identity pin
           if (this.pin.length < 4 || this.pin1.length < 4) {
             this.$root.$emit(
               'alertOn',
@@ -398,39 +418,42 @@ export default {
             if (this.pin === this.pin1) {
               this.check = true;
               this.showPinDialog = false;
-              this.$root.$emit("loaderOn");
+              this.$root.$emit('loaderOn');
               await chainClient.init(this.pin);
               this.pinned = chainClient.pinned();
               this.pinAutomation(this.returnAutomation, this.pin);
-              this.$root.$emit("walletEvent");
-              this.$root.$emit("loaderOff");
-              if (!localStorage.getItem("backupDone")) {
+              this.$root.$emit('walletEvent');
+              this.$root.$emit('loaderOff');
+              if (!localStorage.getItem('backupDone')) {
                 this.setBackupStatus(false);
               } else {
-                this.backupDone = JSON.parse(localStorage.getItem("backupDone"));
+                this.backupDone = JSON.parse(
+                  localStorage.getItem('backupDone'),
+                );
               }
               this.$root.$emit(
-                "alertOn",
-                "Identity created successfully!",
-                "green"
+                'alertOn',
+                'Identity created successfully!',
+                'green',
               );
-              this.pin = "";
-              this.pin1 = "";
+              this.pin = '';
+              this.pin1 = '';
               this.pinDialog = 0;
               this.showPinDialog = false;
               this.showPinConfirmInput = false;
             } else {
-              this.pin = "";
-              this.pin1 = "";
-              this.$root.$emit("alertOn", "Passcode mismatch.", "red");
+              this.pin = '';
+              this.pin1 = '';
+              this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
             }
           }
-        } else if (this.pinDialog === 3) { // Restore 
+        } else if (this.pinDialog === 3) {
+          // Restore
           if (this.pin.length < 4 || this.pin1.length < 4) {
             this.$root.$emit(
-              "alertOn",
-              "Passcode must be at least 4 characters long!",
-              "red"
+              'alertOn',
+              'Passcode must be at least 4 characters long!',
+              'red',
             );
             this.pin = '';
             this.pin1 = '';
@@ -464,7 +487,7 @@ export default {
 
     setBackupStatus(status = false) {
       this.backupDone = status;
-      localStorage.setItem("backupDone", JSON.stringify(status));
+      localStorage.setItem('backupDone', JSON.stringify(status));
     },
 
     async pinAutomation(check, PIN) {
@@ -472,7 +495,11 @@ export default {
         if (check) {
           this.showPinDialog = false;
           await this.rememberPIN(PIN);
-          this.$root.$emit('alertOn', 'Passcode remembered successfully!', 'green');
+          this.$root.$emit(
+            'alertOn',
+            'Passcode remembered successfully!',
+            'green',
+          );
         }
       } else {
         this.$root.$emit(
@@ -500,4 +527,3 @@ export default {
   },
 };
 </script>
-
