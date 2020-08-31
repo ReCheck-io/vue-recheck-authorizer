@@ -95,13 +95,13 @@ export default {
       decodedString: '',
       componentHandled: this.handledByComponent,
       apiEnv:
-        process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !== ''
-          ? process.env.VUE_APP_API_ENV.split(',')
+        process.env.VUE_APP_API_URL && process.env.VUE_APP_API_URL !== ''
+          ? process.env.VUE_APP_API_URL
           : '',
       apiNetwork:
         process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ''
           ? process.env.VUE_APP_NETWORK
-          : '',
+          : 'ae',
 
       publicAddress: '',
       automation: false,
@@ -129,13 +129,12 @@ export default {
       alert("Hey you don't have Vue Router!");
     }
 
-    if (this.apiEnv !== '') {
-      chainClient.setURLandNetwork(this.apiEnv[0], this.apiEnv[1]);
+    if (this.apiEnv !== '' && this.apiNetwork !== '') {
+      chainClient.setURLandNetwork(this.apiEnv, this.apiNetwork);
     } else {
-      const currentNetwork = this.apiNetwork !== '' ? this.apiNetwork : 'ae';
       let savedApiUrl = localStorage.getItem('apiUrl');
       if (savedApiUrl && savedApiUrl !== null) {
-        chainClient.setURLandNetwork(savedApiUrl, currentNetwork);
+        chainClient.setURLandNetwork(savedApiUrl, this.apiNetwork);
       }
     }
 
@@ -176,10 +175,8 @@ export default {
         this.pinCase = 'login';
         if (this.apiEnv === '') {
           let apiUrl = decodedString.split('/login')[0];
-          const currentNetwork =
-            this.apiNetwork !== '' ? this.apiNetwork : 'ae';
           localStorage.setItem('apiUrl', apiUrl);
-          chainClient.setURLandNetwork(apiUrl, currentNetwork);
+          chainClient.setURLandNetwork(apiUrl, this.apiNetwork);
         }
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);

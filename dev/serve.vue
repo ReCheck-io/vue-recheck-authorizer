@@ -28,7 +28,7 @@ export default Vue.extend({
     <hr />
     
     <h3 class="title">Identity</h3>
-    <RecheckIdentity appName="ipOcean" />
+    <RecheckIdentity appName="My ReCheck" />
   </div>
 </template>
 

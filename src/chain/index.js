@@ -6,11 +6,10 @@ import { logger } from '../utils/logger';
 var wallet = null;
 var keyPair = null;
 
-let environment = process.env.VUE_APP_API_ENV && process.env.VUE_APP_API_ENV !== ""
-  ? process.env.VUE_APP_API_ENV.split(",")
+let apiUrl = process.env.VUE_APP_API_URL && process.env.VUE_APP_API_URL !== ""
+  ? process.env.VUE_APP_API_URL
   : "";
 
-let apiUrl = environment !== "" ? environment[0] : ""
 let network = process.env.VUE_APP_NETWORK && process.env.VUE_APP_NETWORK !== ""
   ? process.env.VUE_APP_NETWORK
   : "ae";
@@ -22,10 +21,14 @@ const chain = {
     e2e.setDefaultRequestId(newInstance)
   },
 
-  setURLandNetwork: function (apiURL, network) {
-    apiUrl = apiURL;
-    network = network;
-    e2e.init(apiURL, network);
+  setURLandNetwork: function (apiURL, apiNetwork) {
+    if (apiURL !== "") {
+      apiUrl = apiURL;
+    }
+    if (apiNetwork !== "") {
+      network = apiNetwork;
+    }
+    e2e.init(apiUrl, network);
   },
 
   init: async function (password) {
