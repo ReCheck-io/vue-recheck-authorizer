@@ -1,7 +1,7 @@
 module.exports = {
-  title: 'Vue Recheck Authorizer',
+  title: 'Vue ReCheck Authorizer',
   description:
-    'A set of Vue.js components for authentication and data interaction with Recheck Platform.',
+    'A set of Vue.js components for authentication and data interaction with ReCheck Platform.',
 
   base: '/vue-recheck-authorizer/',
 

@@ -85,6 +85,14 @@ export default {
       type: String,
       default: 'ReCheckAPP',
     },
+    isCameraOmitted: {
+      type: Boolean,
+      default: false,
+    },
+    scanLink: {
+      type: String,
+      default: '',
+    }
   },
 
   data() {
@@ -93,7 +101,11 @@ export default {
       pinned: false,
       initialized: false,
       decodedString: '',
+      
       componentHandled: this.handledByComponent,
+      omitCamera: this.isCameraOmitted,
+      scanUrl: this.scanLink,
+      
       apiEnv:
         process.env.VUE_APP_API_URL && process.env.VUE_APP_API_URL !== ''
           ? process.env.VUE_APP_API_URL
@@ -138,8 +150,16 @@ export default {
       }
     }
 
-    if (this.pinned) {
+    if (this.pinned && !this.omitCamera) {
       this.setupCamera();
+    }
+
+    if (this.pinned && this.omitCamera && this.scanUrl !== '') {
+      this.onDecode(this.scanUrl);
+
+      setTimeout(() => {
+        this.setupCamera();
+      }, 1500);
     }
   },
 
@@ -170,6 +190,8 @@ export default {
 
     onDecode(decodedString) {
       this.decodedString = decodedString;
+      
+      console.log(decodedString)
 
       if (decodedString.indexOf('/login') > 0) {
         this.pinCase = 'login';
