@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Identity | Vue ReCheck Authorizer</title>
+    <meta name="generator" content="VuePress 1.5.2">
+    
+    <meta name="description" content="A set of Vue.js components for authentication and data interaction with ReCheck Platform.">
+    <link rel="preload" href="/vue-recheck-authorizer/assets/css/0.styles.40a4dcf7.css" as="style"><link rel="preload" href="/vue-recheck-authorizer/assets/js/app.7a53c66f.js" as="script"><link rel="preload" href="/vue-recheck-authorizer/assets/js/2.d6b7812e.js" as="script"><link rel="preload" href="/vue-recheck-authorizer/assets/js/5.7234bfac.js" as="script"><link rel="prefetch" href="/vue-recheck-authorizer/assets/js/3.3db68c82.js"><link rel="prefetch" href="/vue-recheck-authorizer/assets/js/4.3a84c9c9.js"><link rel="prefetch" href="/vue-recheck-authorizer/assets/js/6.db385f9b.js"><link rel="prefetch" href="/vue-recheck-authorizer/assets/js/7.05a11fa5.js"><link rel="prefetch" href="/vue-recheck-authorizer/assets/js/8.ff251265.js">
+    <link rel="stylesheet" href="/vue-recheck-authorizer/assets/css/0.styles.40a4dcf7.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/vue-recheck-authorizer/" class="home-link router-link-active"><!----> <span class="site-name">Vue ReCheck Authorizer</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/vue-recheck-authorizer/guide.html" class="nav-link">
+  Component APIs
+</a></div> <a href="https://github.com/recheck-io/vue-recheck-authorizer" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/vue-recheck-authorizer/guide.html" class="nav-link">
+  Component APIs
+</a></div> <a href="https://github.com/recheck-io/vue-recheck-authorizer" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><a href="/vue-recheck-authorizer/guide.html" class="sidebar-link">Getting Started</a></li><li><a href="/vue-recheck-authorizer/api/Scanner.html" class="sidebar-link">Scanner</a></li><li><a href="/vue-recheck-authorizer/api/Identity.html" aria-current="page" class="active sidebar-link">Identity</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/vue-recheck-authorizer/api/Identity.html#pin-management" class="sidebar-link">Pin Management</a></li><li class="sidebar-sub-header"><a href="/vue-recheck-authorizer/api/Identity.html#events" class="sidebar-link">Events</a></li><li class="sidebar-sub-header"><a href="/vue-recheck-authorizer/api/Identity.html#props" class="sidebar-link">Props</a></li><li class="sidebar-sub-header"><a href="/vue-recheck-authorizer/api/Identity.html#slots" class="sidebar-link">Slots</a></li></ul></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="identity"><a href="#identity" class="header-anchor">#</a> Identity</h1> <h2 id="pin-management"><a href="#pin-management" class="header-anchor">#</a> Pin Management</h2> <div class="custom-block warning"><p class="custom-block-title">WARNING</p> <p>In order to use <code>Identity</code> component you need to setup <code>Vuex</code> and create store like the sample below.</p></div> <details class="custom-block details"><summary>Show sample Vuex Store code</summary> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> Vue <span class="token keyword">from</span> <span class="token string">'vue'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Vuex <span class="token keyword">from</span> <span class="token string">'vuex'</span><span class="token punctuation">;</span>
+
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>Vuex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vuex<span class="token punctuation">.</span>Store</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  state<span class="token operator">:</span> <span class="token punctuation">{</span>
+    automatedPIN<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    savedPIN<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    counter<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    timeToRemember<span class="token operator">:</span> <span class="token number">600000</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  getters<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">returnPINState</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">state</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> state<span class="token punctuation">.</span>automatedPIN<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">returnSavedPIN</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">state</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> state<span class="token punctuation">.</span>savedPIN<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">returnTimeToRemember</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">state</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> state<span class="token punctuation">.</span>timeToRemember<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  mutations<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">deadline</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">state</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      state<span class="token punctuation">.</span>automatedPIN <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+      state<span class="token punctuation">.</span>savedPIN <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
+      <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'Your automated PIN entry service has ended '</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">startTiming</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">state<span class="token punctuation">,</span> payload</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      state<span class="token punctuation">.</span>automatedPIN <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+      state<span class="token punctuation">.</span>savedPIN <span class="token operator">=</span> payload<span class="token punctuation">;</span>
+      <span class="token function">alert</span><span class="token punctuation">(</span>
+        <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Your Passcode is saved for the next </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>
+          state<span class="token punctuation">.</span>timeToRemember <span class="token operator">/</span> <span class="token number">60000</span>
+        <span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> minutes</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">rememberTime</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">state<span class="token punctuation">,</span> payload</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      state<span class="token punctuation">.</span>timeToRemember <span class="token operator">=</span> payload<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  actions<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">startTiming</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> commit <span class="token punctuation">}</span><span class="token punctuation">,</span> payload</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">commit</span><span class="token punctuation">(</span><span class="token string">'startTiming'</span><span class="token punctuation">,</span> payload<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">deadline</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> commit<span class="token punctuation">,</span> state <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        <span class="token function">commit</span><span class="token punctuation">(</span><span class="token string">'deadline'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span> state<span class="token punctuation">.</span>timeToRemember<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> store<span class="token punctuation">;</span>
+</code></pre></div></details> <h2 id="events"><a href="#events" class="header-anchor">#</a> Events</h2> <p>No Events</p> <h2 id="props"><a href="#props" class="header-anchor">#</a> Props</h2> <h3 id="classes"><a href="#classes" class="header-anchor">#</a> <code>classes</code></h3> <ul><li><strong>Payload Type:</strong> <code>String</code></li> <li><strong>Required:</strong> <code>false</code></li></ul> <p>Used for custom styles for the components (alert, loader, cards and modals).</p> <h2 id="slots"><a href="#slots" class="header-anchor">#</a> Slots</h2> <p>No Slots</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/vue-recheck-authorizer/api/Scanner.html" class="prev">
+        Scanner
+      </a></span> <!----></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/vue-recheck-authorizer/assets/js/app.7a53c66f.js" defer></script><script src="/vue-recheck-authorizer/assets/js/2.d6b7812e.js" defer></script><script src="/vue-recheck-authorizer/assets/js/5.7234bfac.js" defer></script>
+  </body>
+</html>
