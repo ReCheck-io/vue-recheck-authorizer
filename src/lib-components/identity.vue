@@ -27,7 +27,7 @@
 
       <!-- User Identity settings (restore identity & backup identity) -->
       <card v-if="!backupDone" :class="{ 'do-backup': !backupDone }">
-        <template #header>Backup &amp; Recover</template>
+        <template #header>Backup</template>
         <p>
           We <strong>STRONGLY RECOMMEND</strong> to write down your recovery
           phrase in order to be able to recover your identity.
@@ -43,7 +43,7 @@
       <card v-if="backupDone">
         <template #header>Show Recovery Phrase</template>
         <p>
-          Please tap the button below to reveal your recovery phrase or share it.
+          Please tap the button below to reveal your recovery phrase or export it.
         </p>
         <template #footer>
           <button type="button" class="btn" @click="showPrivateKey">
@@ -55,7 +55,7 @@
       <card>
         <template #header>Reset Identity</template>
         <p>
-          Reset Identity will remove your current identity. If you have not
+          This will remove your current identity. If you have not
           saved the recovery phrase for your current identity it will be lost
           <strong>FOREVER</strong>.
         </p>
