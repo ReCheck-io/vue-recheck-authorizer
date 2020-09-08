@@ -190,8 +190,6 @@ export default {
 
     onDecode(decodedString) {
       this.decodedString = decodedString;
-      
-      console.log(decodedString)
 
       if (decodedString.indexOf('/login') > 0) {
         this.pinCase = 'login';
