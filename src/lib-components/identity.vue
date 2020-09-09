@@ -43,7 +43,8 @@
       <card v-if="backupDone">
         <template #header>Show Recovery Phrase</template>
         <p>
-          Please tap the button below to reveal your recovery phrase or export it.
+          Please tap the button below to reveal your recovery phrase or export
+          it.
         </p>
         <template #footer>
           <button type="button" class="btn" @click="showPrivateKey">
@@ -55,8 +56,8 @@
       <card>
         <template #header>Reset Identity</template>
         <p>
-          This will remove your current identity. If you have not
-          saved the recovery phrase for your current identity it will be lost
+          This will remove your current identity. If you have not saved the
+          recovery phrase for your current identity it will be lost
           <strong>FOREVER</strong>.
         </p>
         <template #footer>
@@ -99,25 +100,34 @@
       :confirmPinCode.sync="pin1"
       :inputValue.sync="pin"
       :rememberPin="true"
+      modalFormId="pinModalForm"
       :checkboxValue.sync="automation"
       :showPinConfirmInput="showPinConfirmInput"
       :publicAddress="publicAddress"
     >
-      <template #header
-        >Passcode
-        {{
-          publicAddress !== ''
-            ? 'for ' +
-              publicAddress.replace(
-                publicAddress.substring(8, publicAddress.length - 4),
-                '...',
-              )
-            : ''
-        }}
+      <template #header>
+        Passcode
+        <span>
+          {{
+            publicAddress !== ''
+              ? 'for ' +
+                publicAddress.replace(
+                  publicAddress.substring(7, publicAddress.length - 4),
+                  '...',
+                )
+              : ''
+          }}
+        </span>
       </template>
       <template #footer>
         <button type="button" class="btn" @click="cancelPin">Cancel</button>
-        <button type="button" class="btn primary" @click="confirmPin">
+        <button
+          type="submit"
+          class="btn primary"
+          form="pinModalForm"
+          @keyup.enter="confirmPin"
+          @click="confirmPin"
+        >
           Confirm
         </button>
       </template>
@@ -126,6 +136,7 @@
       :isVisible="importDialog"
       :inputValue.sync="privateKey"
       inputType="text"
+      modalFormId="privateKeyModalForm"
       :inputLabel="inputMessage"
       inputPlaceholder="Please enter your recovery phrase."
     >
@@ -134,7 +145,13 @@
         <button type="button" class="btn" @click="importDialog = false">
           Cancel
         </button>
-        <button type="button" class="btn primary" @click="doRestoreIdentity">
+        <button
+          type="submit"
+          class="btn primary"
+          form="privateKeyModalForm"
+          @keyup.enter="doRestoreIdentity"
+          @click="doRestoreIdentity"
+        >
           Recover
         </button>
       </template>
@@ -483,12 +500,15 @@ export default {
         } else if (this.pinDialog === 4) { // Show Private Key
           if (chainClient.loadWallet(this.pin) !== 'authError') {
             this.privateKey = chainClient.wallet().phrase;
-            // this.privateKeyDialog = true;
             this.showPinDialog = false;
             this.pinDialog = 0;
             this.pin = '';
 
-            this.$root.$emit('showPhrase', this.privateKey);
+            if (!this.mobileBackup) {
+              this.privateKeyDialog = true;
+            } else {
+              this.$root.$emit('showPhrase', this.privateKey);
+            }
           } else {
             this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
           }

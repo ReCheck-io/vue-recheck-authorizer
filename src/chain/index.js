@@ -160,7 +160,7 @@ const chain = {
     );
     logger('challenge', challenge);
     try {
-      let firebaseToken = localStorage.getItem("firebaseToken");
+      let firebaseToken = localStorage.getItem("firebaseToken") || 'notoken';
       logger("Firebase Device Token", firebaseToken);
       let token = await e2e.loginWithChallenge(challenge, keyPair, firebaseToken);
       localStorage.lastRtnToken = token;
@@ -185,7 +185,7 @@ const chain = {
     }
 
     try {
-      let firebaseToken = localStorage.getItem("firebaseToken");
+      let firebaseToken = localStorage.getItem("firebaseToken") || 'notoken';
       logger("Firebase Device Token", firebaseToken);
       await e2e.login(keyPair, firebaseToken);
       let token = await e2e.execSelection(_selection, keyPair);

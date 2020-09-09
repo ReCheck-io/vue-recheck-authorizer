@@ -11,42 +11,42 @@
         <h3><slot name="header"></slot></h3>
       </header>
       <div class="modal-body">
-        <div class="form-group">
-          <label class="inputLabel" v-show="!!inputLabel">
-            {{ inputLabel }}
-            <input
-              :type="inputType"
-              :value="inputValue"
-              :placeholder="inputPlaceholder"
-              @input="updateInput1($event.target.value)"
-              required
-            />
-          </label>
-          <label class="inputLabel" v-if="showPinConfirmInput">
-            <input
-              :type="inputType"
-              :value="pinConfirmValue"
-              :placeholder="inputPlaceholder2"
-              @input="updateInput2($event.target.value)"
-              required
-            />
-          </label>
-          <div
-            class="savePin"
-            v-if="
-              inputType === 'password' && rememberPin === true ? true : false
-            "
-          >
-            <label class="checkboxLabel">
-              Remember your Passcode
+        <form @submit.prevent :id="modalFormId">
+          <div class="form-group">
+            <label class="inputLabel" v-show="!!inputLabel">
+              {{ inputLabel }}
               <input
-                type="checkbox"
-                :value="checkboxValue"
-                @change="updateCheckbox($event.target.checked)"
+                :type="inputType"
+                :value="inputValue"
+                :placeholder="inputPlaceholder"
+                @input="updateInput1($event.target.value)"
               />
             </label>
+            <label class="inputLabel" v-if="showPinConfirmInput">
+              <input
+                :type="inputType"
+                :value="pinConfirmValue"
+                :placeholder="inputPlaceholder2"
+                @input="updateInput2($event.target.value)"
+              />
+            </label>
+            <div
+              class="savePin"
+              v-if="
+                inputType === 'password' && rememberPin === true ? true : false
+              "
+            >
+              <label class="checkboxLabel">
+                Remember your Passcode
+                <input
+                  type="checkbox"
+                  :value="checkboxValue"
+                  @change="updateCheckbox($event.target.checked)"
+                />
+              </label>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
       <footer class="modal-footer">
         <slot name="footer"></slot>
@@ -99,6 +99,10 @@ export default {
     showPinConfirmInput: {
       type: Boolean,
       default: false,
+    },
+    modalFormId: {
+      type: String,
+      default: '',
     }
   },
 
@@ -113,5 +117,21 @@ export default {
       this.$emit('update:checkboxValue', newValue);
     },
   },
+
+  // Watch when modal is active focus on first input
+  watch: {
+    isVisible(isActive) {
+      if (isActive) {
+        const currentModals = document.querySelectorAll(".modal.input");
+        setTimeout(() => {
+          currentModals.forEach((modal) => {
+            if (modal.attributes.style.value === '') {  
+              modal.querySelector("input").focus();
+            }
+          })
+        }, 100);
+      }
+    }
+  }
 };
 </script>

@@ -20,24 +20,35 @@
     <input-modal
       :isVisible="showPinModal"
       :rememberPin="false"
+      modalFormId="pinModalForm"
       :inputValue.sync="pinCode"
       :checkboxValue.sync="automation"
     >
-      <template #header
-        >Passcode
-        {{
-          publicAddress !== ''
-            ? 'for ' +
-              publicAddress.replace(
-                publicAddress.substring(8, publicAddress.length - 4),
-                '...',
-              )
-            : ''
-        }}
+      <template #header>
+        Passcode
+        <span>
+          {{
+            publicAddress !== ''
+              ? 'for ' +
+                publicAddress.replace(
+                  publicAddress.substring(7, publicAddress.length - 4),
+                  '...',
+                )
+              : ''
+          }}
+        </span>
       </template>
       <template #footer>
         <button type="button" class="btn" @click="cancelPin">Cancel</button>
-        <button type="button" class="btn" @click="confirmPin">Confirm</button>
+        <button
+          type="submit"
+          class="btn"
+          form="pinModalForm"
+          @click="confirmPin"
+          @keyup.enter="confirmPin"
+        >
+          Confirm
+        </button>
       </template>
     </input-modal>
   </div>
