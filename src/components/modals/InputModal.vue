@@ -121,6 +121,7 @@ export default {
   // Watch when modal is active focus on first input
   watch: {
     isVisible(isActive) {
+      this.$root.$emit("pinmodal-is-active", isActive);
       if (isActive) {
         const currentModals = document.querySelectorAll(".modal.input");
         setTimeout(() => {

@@ -16,6 +16,7 @@
       :message="message"
       :resolve="resolve"
       :reject="reject"
+      :agreementText="agreementTexts"
     />
     <input-modal
       :isVisible="showPinModal"
@@ -103,7 +104,8 @@ export default {
     scanLink: {
       type: String,
       default: '',
-    }
+    },
+    agreementText: ''
   },
 
   data() {
@@ -112,11 +114,11 @@ export default {
       pinned: false,
       initialized: false,
       decodedString: '',
-      
+
       componentHandled: this.handledByComponent,
       omitCamera: this.isCameraOmitted,
       scanUrl: this.scanLink,
-      
+
       apiEnv:
         process.env.VUE_APP_API_URL && process.env.VUE_APP_API_URL !== ''
           ? process.env.VUE_APP_API_URL
@@ -131,6 +133,8 @@ export default {
       showPinModal: false,
       pinCase: 'login',
       pinCode: '',
+
+      agreementTexts: this.agreementText,
 
       showConfirmModal: false,
       title: '',
@@ -200,6 +204,7 @@ export default {
     },
 
     onDecode(decodedString) {
+      this.$emit('is-scanned', true);
       this.decodedString = decodedString;
 
       if (decodedString.indexOf('/login') > 0) {
@@ -218,7 +223,8 @@ export default {
             'You are about to login. Are you sure?',
           );
         }
-      } else if (decodedString.startsWith('sh:')) {
+      } else if (decodedString.indexOf('sh:') > 0) {
+        this.decodedString = decodedString.substring(decodedString.length - 69);
         this.pinCase = 'share';
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);
@@ -229,7 +235,8 @@ export default {
             'You are about to share a document. Are you sure?',
           );
         }
-      } else if (decodedString.startsWith('se:')) {
+      } else if (decodedString.indexOf('se:') > 0) {
+        this.decodedString = decodedString.substring(decodedString.length - 69);
         this.pinCase = 'share';
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);
@@ -240,7 +247,8 @@ export default {
             'You are about to share a document by email. Are you sure?',
           );
         }
-      } else if (decodedString.startsWith('sg:')) {
+      } else if (decodedString.indexOf('sg:') > 0) {
+        this.decodedString = decodedString.substring(decodedString.length - 69);
         this.pinCase = 'sign';
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);
@@ -251,7 +259,8 @@ export default {
             'You are about to sign a file. Are you sure?',
           );
         }
-      } else if (decodedString.startsWith('re:')) {
+      } else if (decodedString.indexOf('re:') > 0) {
+        this.decodedString = decodedString.substring(decodedString.length - 69);
         this.pinCase = 'decrypt';
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);
@@ -322,7 +331,7 @@ export default {
       this.pinCode = '';
     },
 
-    open(title, message) {
+    open(title, message, approveSign) {
       this.showConfirmModal = true;
       this.title = title;
       this.message = message;

@@ -1,3 +1,20 @@
+<template>
+  <div id="app">
+    <h3 class="title">Scanner</h3>
+    <RecheckScanner
+      appRequestId="ReCheckAPP" 
+      :handledByComponent="true" 
+      :useIntegratedCamera="true"
+      @is-scanned="testIt"
+    />
+
+    <hr />
+    
+    <h3 class="title">Identity</h3>
+    <RecheckIdentity appName="My ReCheck" />
+  </div>
+</template>
+
 <script>
 import Vue from 'vue';
 import chainClient from '@/chain'
@@ -11,26 +28,16 @@ export default Vue.extend({
   },
 
   mounted() {
-    chainClient.setURLandNetwork("", process.env.VUE_APP_NETWORK)
+    chainClient.setURLandNetwork("", process.env.VUE_APP_NETWORK);
+  },
+
+  methods: {
+    testIt(res) {
+      console.log(res)
+    }
   }
 });
 </script>
-
-<template>
-  <div id="app">
-    <h3 class="title">Scanner</h3>
-    <RecheckScanner
-      appRequestId="ReCheckAPP" 
-      :handledByComponent="true" 
-      :useIntegratedCamera="true"
-    />
-
-    <hr />
-    
-    <h3 class="title">Identity</h3>
-    <RecheckIdentity appName="My ReCheck" />
-  </div>
-</template>
 
 <style>
 body {

@@ -15,6 +15,7 @@
       <div class="modal-body">
         <slot name="body">
           <p v-show="!!message">{{ message }}</p>
+          <p class="terms" v-if="agreementText" v-html="agreementText"></p>
         </slot>
       </div>
       <footer class="modal-footer">
@@ -43,6 +44,10 @@ export default {
       default: '',
     },
     message: {
+      type: String,
+      default: '',
+    },
+    agreementText: {
       type: String,
       default: '',
     },
