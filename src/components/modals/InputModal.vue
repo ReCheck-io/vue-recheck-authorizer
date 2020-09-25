@@ -4,6 +4,7 @@
     tabindex="-1"
     aria-modal="true"
     class="modal input"
+    v-bind:class="[isVisible ? 'active' : '']"
     v-show="isVisible"
   >
     <div class="modal-content">
@@ -56,6 +57,8 @@
 </template>
 
 <script>
+import { logger } from '../../utils/logger';
+
 export default {
   name: 'input-modal',
 
@@ -90,11 +93,11 @@ export default {
     },
     inputPlaceholder: {
       type: String,
-      default: '********',
+      default: '',
     },
     inputPlaceholder2: {
       type: String,
-      default: '********',
+      default: '',
     },
     showPinConfirmInput: {
       type: Boolean,
@@ -121,15 +124,15 @@ export default {
   // Watch when modal is active focus on first input
   watch: {
     isVisible(isActive) {
-      this.$root.$emit("pinmodal-is-active", isActive);
+      this.$root.$emit("pinmodal-status", isActive);
+
       if (isActive) {
-        const currentModals = document.querySelectorAll(".modal.input");
         setTimeout(() => {
-          currentModals.forEach((modal) => {
-            if (modal.attributes.style.value === '') {  
-              modal.querySelector("input").focus();
-            }
-          })
+          const modal = document.querySelector(".modal.input.active");
+            
+          if (modal.classList.contains("active")) {
+            modal.querySelector("input").focus();
+          }
         }, 100);
       }
     }
