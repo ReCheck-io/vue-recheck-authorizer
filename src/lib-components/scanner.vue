@@ -64,7 +64,7 @@ import InfoCard from '../components/cards/InfoCard.vue';
 import InputModal from '../components/modals/InputModal.vue';
 import ConfirmModal from '../components/modals/ConfirmModal.vue';
 import chainClient from '../chain/index';
-import { logger } from '../utils/logger';
+import { logger, getOrigin } from '../utils';
 
 export default {
   name: 'RecheckScanner',
@@ -207,13 +207,15 @@ export default {
       this.$emit('is-scanned', true);
       this.decodedString = decodedString;
 
+      const origin = getOrigin(decodedString);
+      logger(origin);
+      if (origin) {
+        localStorage.setItem('apiUrl', origin);
+        chainClient.setURLandNetwork(origin, this.apiNetwork);
+      }
+
       if (decodedString.indexOf('/login') > 0) {
         this.pinCase = 'login';
-        if (this.apiEnv === '') {
-          let apiUrl = decodedString.split('/login')[0];
-          localStorage.setItem('apiUrl', apiUrl);
-          chainClient.setURLandNetwork(apiUrl, this.apiNetwork);
-        }
         if (!this.componentHandled) {
           this.$emit('qr-decode', this.pinCase);
         } else {
@@ -407,7 +409,7 @@ export default {
         if (pin === undefined) {
           return false;
         } else {
-          if (pin.length < 3) {
+          if (pin.length < 4) {
             return false;
           } else {
             return true;

@@ -416,7 +416,7 @@ export default {
     async confirmPin() {
       let isValidPasswords;
       if (this.pinDialog === 2 || this.pinDialog === 3) {
-        isValidPasswords = this.validPasswords(this.pin, this.pin1);
+        isValidPasswords = this.validPasswords(this.pin, this.pin1, 6);
       } else if (this.pinDialog !== 2 || this.pinDialog !== 3) {
         isValidPasswords = this.validPasswords(this.pin);
       }
@@ -454,7 +454,7 @@ export default {
           this.showPinConfirmInput = false;
           this.showPinDialog = false;
         } else if (this.pinDialog === 2) { // New identity pin
-          if (!this.validPasswords(this.pin, this.pin1)) {
+          if (!this.validPasswords(this.pin, this.pin1, 6)) {
             this.pin = '';
             this.pin1 = '';
           } else {
@@ -487,7 +487,7 @@ export default {
             }
           }
         } else if (this.pinDialog === 3) { // Restore
-          if (!this.validPasswords(this.pin, this.pin1)) {
+          if (!this.validPasswords(this.pin, this.pin1, 6)) {
             this.pin = '';
             this.pin1 = '';
           } else {
@@ -538,7 +538,7 @@ export default {
       localStorage.setItem('backupDone', JSON.stringify(status));
     },
 
-    validPasswords(pin1 = null, pin2 = null) {
+    validPasswords(pin1 = null, pin2 = null, pinLength = 4) {
       if (pin1 !== null) {
         if (pin2 !== null) {
           if (pin1 === '' || pin2 === '') {
@@ -548,10 +548,10 @@ export default {
               'red',
             );
             return false;
-          } else if (pin1.length < 4 || pin2.length < 4) {
+          } else if (pin1.length < pinLength || pin2.length < pinLength) {
             this.$root.$emit(
               'alertOn',
-              'Passcode fields must be at least 4 characters long!',
+              `Passcode fields must be at least ${pinLength} characters long!`,
               'red',
             );
             return false;
@@ -565,10 +565,10 @@ export default {
           if (pin1 === '') {
             this.$root.$emit('alertOn', 'Passcode can not be ampty!', 'red');
             return false;
-          } else if (pin1 !== '' && pin1.length < 4) {
+          } else if (pin1 !== '' && pin1.length < pinLength) {
             this.$root.$emit(
               'alertOn',
-              'Passcode must be at least 4 characters!',
+              `Passcode must be at least ${pinLength} characters!`,
               'red',
             );
             return false;

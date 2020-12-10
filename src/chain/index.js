@@ -100,10 +100,23 @@ const chain = {
     var account = decrypt(password, encrypted); // decrypt encrypted
     this.resetWallet();
     logger('loaded private key: ' + encrypted);
+    logger("decrypted", account);
     wallet = account;
     keyPair = JSON.parse(account);
+    // TODO: Remove after a time when all users updated their ID's
+    if (keyPair.address.startsWith("ak_") || keyPair.publicKey.startsWith("ak_")) {
+      keyPair.address = keyPair.address.replace('ak_', 're_');
+      keyPair.publicKey = keyPair.publicKey.replace('ak_', 're_');
+      const keyPairStr = JSON.stringify(keyPair);
+      wallet = keyPairStr;
+      let newKeyPairEncrypted = encrypt(password, keyPairStr);
+      localStorage.walletSha3Ae = e2e.getHash(keyPairStr);
+      localStorage.walletAe1 = newKeyPairEncrypted;
+    } else {
+      localStorage.walletSha3Ae = e2e.getHash(account);
+    }
+
     localStorage.publicAddress = keyPair.address;
-    localStorage.walletSha3Ae = e2e.getHash(account);
     return true;
   },
 
@@ -162,7 +175,9 @@ const chain = {
     try {
       let firebaseToken = localStorage.getItem("firebaseToken") || 'notoken';
       logger("Firebase Device Token", firebaseToken);
-      let token = await e2e.loginWithChallenge(challenge, keyPair, firebaseToken);
+      let deviceInfo = localStorage.getItem("deviceInfo") || 'unknown';
+      logger("Login Device Version", deviceInfo)
+      let token = await e2e.loginWithChallenge(challenge, keyPair, firebaseToken, deviceInfo);
       localStorage.lastRtnToken = token;
       logger(token);
       callback(false);
@@ -187,7 +202,9 @@ const chain = {
     try {
       let firebaseToken = localStorage.getItem("firebaseToken") || 'notoken';
       logger("Firebase Device Token", firebaseToken);
-      await e2e.login(keyPair, firebaseToken);
+      let deviceInfo = localStorage.getItem("deviceInfo") || 'unknown';
+      logger("Login Device Version", deviceInfo)
+      await e2e.login(keyPair, firebaseToken, deviceInfo);
       let token = await e2e.execSelection(_selection, keyPair);
       logger(token);
       callback(false);
