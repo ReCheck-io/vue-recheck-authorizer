@@ -167,17 +167,21 @@ const chain = {
       this.loadWallet(password);
     }
 
-    var challenge = _challenge.substring(
+    let challenge = _challenge.substring(
       _challenge.lastIndexOf('/') + 1,
       _challenge.length,
     );
+
     logger('challenge', challenge);
+
     try {
       let firebaseToken = localStorage.getItem("firebaseToken") || 'notoken';
       logger("Firebase Device Token", firebaseToken);
       let deviceInfo = localStorage.getItem("deviceInfo") || 'unknown';
-      logger("Login Device Version", deviceInfo)
+      logger("Login Device Version", deviceInfo);
+      
       let token = await e2e.loginWithChallenge(challenge, keyPair, firebaseToken, deviceInfo);
+
       localStorage.lastRtnToken = token;
       logger(token);
       callback(false);
@@ -200,13 +204,13 @@ const chain = {
     }
 
     try {
-      let firebaseToken = localStorage.getItem("firebaseToken") || 'notoken';
-      logger("Firebase Device Token", firebaseToken);
-      let deviceInfo = localStorage.getItem("deviceInfo") || 'unknown';
-      logger("Login Device Version", deviceInfo)
-      await e2e.login(keyPair, firebaseToken, deviceInfo);
-      let token = await e2e.execSelection(_selection, keyPair);
-      logger(token);
+      // let firebaseToken = localStorage.getItem("firebaseToken") || 'notoken';
+      // logger("Firebase Device Token", firebaseToken);
+      // let deviceInfo = localStorage.getItem("deviceInfo") || 'unknown';
+      // logger("Login Device Version", deviceInfo)
+      // const loginRes = await e2e.login(keyPair, firebaseToken, deviceInfo);
+      let execResultObj = await e2e.execSelection(_selection, keyPair);
+      logger(execResultObj);
       callback(false);
     } catch (error) {
       console.error(error);
