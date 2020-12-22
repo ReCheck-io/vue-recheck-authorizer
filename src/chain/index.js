@@ -1,6 +1,6 @@
 import { encrypt, decrypt } from 'aes256';
 import e2e from 'recheck-clientjs-library';
-import { logger } from '../utils/logger';
+import { logger, saveAppLogs } from '../utils/logger';
 
 // eslint-disable-next-line
 var wallet = null;
@@ -68,7 +68,7 @@ const chain = {
   },
 
   checkPassword: function (password) {
-    logger('password', password);
+    logger('checkPassword password: ', password);
     return (
       e2e.getHash(decrypt(password, localStorage.walletAe1)) ===
       localStorage.walletSha3Ae
@@ -158,7 +158,7 @@ const chain = {
   },
 
   doLogin: async function (password, _challenge, callback) {
-    logger('pass', password);
+    logger('doLogin password: ', password);
 
     if (!this.checkPassword(password)) {
       callback('authError');
@@ -172,7 +172,7 @@ const chain = {
       _challenge.length,
     );
 
-    logger('challenge', challenge);
+    logger('doLogin challenge: ', challenge);
 
     try {
       let firebaseToken = localStorage.getItem("firebaseToken") || 'notoken';
@@ -184,8 +184,10 @@ const chain = {
 
       localStorage.lastRtnToken = token;
       logger(token);
+      saveAppLogs(token);
       callback(false);
     } catch (error) {
+      saveAppLogs(error);
       console.error(error);
       callback(error);
     }
@@ -211,13 +213,22 @@ const chain = {
       // const loginRes = await e2e.login(keyPair, firebaseToken, deviceInfo);
       let execResultObj = await e2e.execSelection(_selection, keyPair);
       logger(execResultObj);
+      saveAppLogs(execResultObj);
       callback(false);
     } catch (error) {
+      saveAppLogs(error);
       console.error(error);
       callback(error);
     }
     this.resetWallet();
     return true;
+  },
+
+  getChainLog: function () {
+    if (localStorage.getItem('app-logs')) {
+      return localStorage.getItem('app-logs');
+    }
+    return false;
   },
 
   privateKey: function () {

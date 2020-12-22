@@ -207,11 +207,13 @@ export default {
       this.$emit('is-scanned', true);
       this.decodedString = decodedString;
 
-      const origin = getOrigin(decodedString);
-      logger(origin);
-      if (origin) {
-        localStorage.setItem('apiUrl', origin);
-        chainClient.setURLandNetwork(origin, this.apiNetwork);
+      if (decodedString) {
+        const origin = getOrigin(decodedString);
+        logger('hasOrigin: ', origin);
+        if (origin) {
+          localStorage.setItem('apiUrl', origin);
+          chainClient.setURLandNetwork(origin, this.apiNetwork);
+        }
       }
 
       if (decodedString.indexOf('/login') > 0) {

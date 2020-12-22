@@ -33,7 +33,7 @@ export default Vue.extend({
 
   methods: {
     testIt(res) {
-      console.log(res)
+      console.log('Dev server testId', res)
     }
   }
 });
