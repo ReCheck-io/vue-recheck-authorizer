@@ -11,13 +11,18 @@ export function logger() {
 }
 
 export function saveAppLogs(...data) {
-  const logs = localStorage.getItem('app-logs');
-  data = JSON.stringify(data);
-  let date = '[' + new Date().toUTCString() + ']: ';
-  if (logs !== null) {
-    let log = logs + '\n' + date + data;
-    localStorage.setItem('app-logs', log);
+  let logs = localStorage.getItem('app-logs');
+  let date = new Date().toUTCString();
+
+  if (logs === null) {
+    const lastLog = JSON.stringify([{ date: date, log: data }], null, 2);
+    localStorage.setItem('app-logs', lastLog);
     return;
   }
-  return localStorage.setItem('app-logs', date + data);
+
+  logs = JSON.parse(logs)
+  logs.push({ date: date, log: data.flat(Infinity) });
+  logs = JSON.stringify(logs, null, 2);
+  localStorage.setItem('app-logs', logs);
+  return;
 }

@@ -28,6 +28,10 @@ const chain = {
     if (apiNetwork !== "") {
       network = apiNetwork;
     }
+    const token = localStorage.getItem('lastRtnToken');
+    if (token) {
+      return e2e.init(apiUrl, network, token);
+    }
     e2e.init(apiUrl, network);
   },
 
@@ -184,7 +188,6 @@ const chain = {
 
       localStorage.lastRtnToken = token;
       logger(token);
-      saveAppLogs(token);
       callback(false);
     } catch (error) {
       saveAppLogs(error);
@@ -213,7 +216,6 @@ const chain = {
       // const loginRes = await e2e.login(keyPair, firebaseToken, deviceInfo);
       let execResultObj = await e2e.execSelection(_selection, keyPair);
       logger(execResultObj);
-      saveAppLogs(execResultObj);
       callback(false);
     } catch (error) {
       saveAppLogs(error);
