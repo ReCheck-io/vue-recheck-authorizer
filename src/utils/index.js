@@ -1,4 +1,10 @@
 export function getOrigin(string) {
-  return (new URL(string)).origin;
+  let url = new URL(string);
+  if (url.pathname.includes('/chain/')) {
+    return url?.origin + '/chain'
+  }
+
+  return url?.origin;
 }
+
 export * from './logger'
