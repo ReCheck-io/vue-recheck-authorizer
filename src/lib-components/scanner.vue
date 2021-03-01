@@ -45,8 +45,8 @@
           type="submit"
           class="btn"
           form="pinModalForm"
-          @click="confirmPin"
-          @keyup.enter="confirmPin"
+          @click="confirmPin()"
+          @keyup.enter="confirmPin()"
         >
           Confirm
         </button>
@@ -141,6 +141,8 @@ export default {
       message: '',
       resolve: null,
       reject: null,
+
+      hasRegisteredFingerprint: JSON.parse(localStorage.getItem('hasRegisteredFingerprint'))
     };
   },
 
@@ -176,6 +178,10 @@ export default {
         this.setupCamera();
       }, 1500);
     }
+
+    this.$root.$on('biometric-success', (secret) => {
+      this.confirmPin(secret);
+    })
   },
 
   methods: {
@@ -345,7 +351,11 @@ export default {
       });
     },
 
-    confirmPin() {
+    confirmPin(secret = null) {
+      if (typeof secret === 'string') {
+        this.pinCode = secret;
+      }
+
       if (this.checkPin(this.pinCode)) {
         if (chainClient.checkPassword(this.pinCode)) {
           if (this.pinCase === 'login') {
@@ -376,6 +386,9 @@ export default {
           if (resolved) {
             if (chainClient.pinned()) {
               this.showPinModal = true;
+              if (this.hasRegisteredFingerprint) {
+                this.$root.$emit('biometric-required');
+              }
             } else {
               if (pinCase === 'login') {
                 this.doLogin();

@@ -268,6 +268,15 @@ export default {
     this.backupDone = localStorage.getItem('backupDone')
       ? JSON.parse(localStorage.getItem('backupDone'))
       : false;
+
+    this.$root.$on('biometric-require-pin', () => {
+      if (this.pinned) {
+        this.pin = '';
+        this.pinDialog = 5;
+        this.showPinDialog = true;
+        this.pinMessage = 'Please enter your Passcode';
+      }
+    })
   },
 
   methods: {
@@ -509,6 +518,15 @@ export default {
             } else {
               this.$root.$emit('showPhrase', this.privateKey);
             }
+          } else {
+            this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
+          }
+        } else if (this.pinDialog === 5) { // Biometric require pin
+          if (chainClient.loadWallet(this.pin) !== 'authError') {
+            this.$root.$emit('biometric-pin', this.pin);
+            this.showPinDialog = false;
+            this.pinDialog = 0;
+            this.pin = '';
           } else {
             this.$root.$emit('alertOn', 'Passcode mismatch.', 'red');
           }
