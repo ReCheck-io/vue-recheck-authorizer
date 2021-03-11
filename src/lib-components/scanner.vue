@@ -16,6 +16,7 @@
       :message="message"
       :resolve="resolve"
       :reject="reject"
+      :isButtonVisible="isButtonVisible"
       :agreementText="agreementTexts"
     />
     <input-modal
@@ -64,7 +65,7 @@ import InfoCard from '../components/cards/InfoCard.vue';
 import InputModal from '../components/modals/InputModal.vue';
 import ConfirmModal from '../components/modals/ConfirmModal.vue';
 import chainClient from '../chain/index';
-import { logger, getOrigin } from '../utils';
+import { logger, getOrigin, isValidURL } from '../utils';
 
 export default {
   name: 'RecheckScanner',
@@ -134,6 +135,7 @@ export default {
       pinCase: 'login',
       pinCode: '',
 
+      isButtonVisible: true,
       agreementTexts: this.agreementText,
 
       showConfirmModal: false,
@@ -210,7 +212,7 @@ export default {
       if (decodedString) {
         const origin = getOrigin(decodedString);
         logger('hasOrigin: ', origin);
-        if (origin) {
+        if (origin && !origin.includes('verify')) {
           localStorage.setItem('apiUrl', origin);
           chainClient.setURLandNetwork(origin, this.apiNetwork);
         }
@@ -275,6 +277,19 @@ export default {
             'You are about to decrypt a document. Are you sure?',
           );
         }
+      } else if (decodedString.indexOf('verify') > 0) {
+        this.isButtonVisible = false;
+        let verifyMessage = `
+          Please click the link to verify certificate content. <br />
+          <a href="${decodedString}" target="_blank" rel="noopener noreferrer">${decodedString.slice(0, 56) + '...'}</a>
+        `;
+        this.open('ReCheck Verifier URL', verifyMessage);
+      } else if (decodedString) {
+        this.isButtonVisible = false;
+        let messageContent = isValidURL(decodedString) 
+          ? `Unrecognized QR Code content: <br /> <a href="${decodedString}" target="_blank" rel="noopener noreferrer">${decodedString.slice(0, 56) + '...'}</a>`
+          : `Unrecognized QR Code content: <br /> ${decodedString}`
+        this.open('Unrecognized QR Code', messageContent);
       }
     },
 
@@ -335,7 +350,7 @@ export default {
       this.pinCode = '';
     },
 
-    open(title, message, approveSign) {
+    open(title, message) {
       this.showConfirmModal = true;
       this.title = title;
       this.message = message;
@@ -362,11 +377,13 @@ export default {
         this.$root.$emit('alertOn', 'Passcode is incorrect!', 'red');
         this.pinCode = '';
       }
+      this.isButtonVisible = true;
     },
 
     cancelPin() {
       this.pinCode = '';
       this.showPinModal = false;
+      this.isButtonVisible = true;
       setTimeout(() => this.setupCamera(), 300);
     },
 

@@ -14,14 +14,16 @@
       </header>
       <div class="modal-body">
         <slot name="body">
-          <p v-show="!!message">{{ message }}</p>
+          <p v-show="!!message" v-html="message"></p>
           <p class="terms" v-if="agreementText" v-html="agreementText"></p>
         </slot>
       </div>
       <footer class="modal-footer">
         <slot name="footer">
-          <button type="button" class="btn" @click="cancelModal">Cancel</button>
-          <button type="button" class="btn primary" @click="confirmModal">
+          <button type="button" class="btn" @click="cancelModal">
+            {{ !isButtonVisible ? 'Close' : 'Cancel' }}
+          </button>
+          <button type="button" class="btn primary" v-if="isButtonVisible" @click="confirmModal">
             Confirm
           </button>
         </slot>
@@ -36,6 +38,10 @@ export default {
 
   props: {
     isVisible: {
+      type: Boolean,
+      default: false,
+    },
+    isButtonVisible: {
       type: Boolean,
       default: false,
     },

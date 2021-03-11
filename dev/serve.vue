@@ -5,9 +5,9 @@
       appRequestId="ReCheckAPP" 
       :handledByComponent="true" 
       :useIntegratedCamera="true"
-      @is-scanned="testIt"
     />
-
+    
+    <br />
     <hr />
     
     <h3 class="title">Identity</h3>
@@ -31,11 +31,6 @@ export default Vue.extend({
     chainClient.setURLandNetwork("", process.env.VUE_APP_NETWORK);
   },
 
-  methods: {
-    testIt(res) {
-      console.log('Dev server testId', res)
-    }
-  }
 });
 </script>
 
