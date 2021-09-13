@@ -175,6 +175,7 @@
       :message="message"
       :resolve="resolve"
       :reject="reject"
+      :isButtonVisible="isButtonVisible"
     />
   </div>
 </template>
@@ -237,6 +238,7 @@ export default {
       showPinConfirmInput: false,
       pinMessage2: 'Please repeat your Passcode',
 
+      isButtonVisible: false,
       showConfirmModal: false,
       title: '',
       message: '',
@@ -296,6 +298,7 @@ export default {
     },
 
     resetIdentity() {
+      this.isButtonVisible = true;
       this.open(
         'Reset Identity',
         'Are you really sure you want to reset your Identity?',
@@ -316,6 +319,8 @@ export default {
           this.showConfirmModal = false;
         }
       });
+
+      this.isButtonVisible = false;
     },
 
     createIdentity() {
