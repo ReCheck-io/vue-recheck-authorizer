@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "aes256": "^1.0.4",
-    "recheck-clientjs-library": "1.0.23-beta",
+    "recheck-clientjs-library": "1.0.22-beta.5",
     "vue-qrcode-reader": "^2.3.3"
   },
   "devDependencies": {

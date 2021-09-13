@@ -313,14 +313,15 @@ export default {
               location.reload();
             } else {
               this.showConfirmModal = false;
+              this.isButtonVisible = false;
             }
           });
         } else {
           this.showConfirmModal = false;
+          this.isButtonVisible = false;
         }
       });
 
-      this.isButtonVisible = false;
     },
 
     createIdentity() {
